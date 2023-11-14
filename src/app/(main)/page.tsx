@@ -1,5 +1,4 @@
 import Banner from "@/components/Banner";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
@@ -8,12 +7,14 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 const Home = () => {
   return (
     <>
       <Banner />
-      <div className="container flex flex-col gap-4 p-10">
+      <div id="search" className="container flex flex-col gap-4 p-10">
+        <Input placeholder="Search Company..." />
         <MockCard />
         <MockCard />
         <MockCard />

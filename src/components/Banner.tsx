@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "./ui/button";
 
@@ -13,7 +15,14 @@ export default function Banner() {
         </p>
         <div className="mt-4 space-x-4">
           <Button variant="outline">Register</Button>
-          <Button>Find Now</Button>
+          <Button
+            onClick={() => {
+              window.location.href = "#search";
+              window.scrollBy(0, -60);
+            }}
+          >
+            Find Now
+          </Button>
         </div>
       </div>
       <div className="relative w-[600px]">
