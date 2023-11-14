@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { isParseable } from "./utils";
+import { checkType } from "./utils";
 import { Role } from "@/types/user";
 import { jwtDecode } from "jwt-decode";
 
@@ -13,13 +13,13 @@ const accessTokenPayloadSchema = z.object({
 
 export function validateAccessToken(token: string) {
   const decoded = jwtDecode(token);
-  const accessToken = isParseable(accessTokenPayloadSchema, decoded);
+  const accessToken = checkType(accessTokenPayloadSchema, decoded);
   return Date.now() + 15 * 60 * 60 < accessToken.exp * 1000;
 }
 
 export function verifyAccessToken(token: string) {
   const decoded = jwtDecode(token);
-  return isParseable(accessTokenPayloadSchema, decoded);
+  return checkType(accessTokenPayloadSchema, decoded);
 }
 
 export function getRefreshToken(response: Response) {
