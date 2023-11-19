@@ -1,20 +1,41 @@
+"use client";
+
 import Banner from "@/components/Banner";
+import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 const Home = () => {
+  const [search, setSearch] = useState("");
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    ("TODO: Search");
+    console.log(search);
+  };
+
   return (
     <>
       <Banner />
       <div id="search" className="container flex flex-col gap-4 p-10">
-        <Input placeholder="Search Company..." />
+        <form onSubmit={(e) => handleSearch(e)} className="flex gap-2">
+          <Input
+            placeholder="Search Company..."
+            onChange={(e) => {
+              if (e.target.value) {
+                setSearch(e.target.value);
+              }
+            }}
+          />
+          <Button type="submit">Search</Button>
+        </form>
         <MockCard />
         <MockCard />
         <MockCard />
