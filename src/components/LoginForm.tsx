@@ -5,7 +5,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { login } from "@/actions/auth";
+import { getMe, login } from "@/actions/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -19,6 +19,8 @@ import {
 import { toast } from "./ui/use-toast";
 import { LoginReqType, loginReqSchema } from "@/types/auth";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import Route from "@/lib/route";
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -33,17 +35,20 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
   });
 
   const onSubmit = async ({ email, password }: LoginReqType) => {
-    const res = await login({ email, password });
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
     console.log(res);
-    if (!res.success) {
+    if (res?.error) {
       toast({
         title: "Error",
-        description: res.msg,
+        description: "Login failed.",
         variant: "destructive",
       });
     } else {
-      // TODO: redirect to dashboard
-      // router.push("/");
+      router.push(Route.HOME);
     }
   };
 

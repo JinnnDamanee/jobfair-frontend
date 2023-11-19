@@ -1,5 +1,5 @@
+import { User } from "@/types/user";
 import "next-auth";
-import { type User } from "./types/base/user";
 
 // declare module "next-auth/jwt" {
 //   /**
