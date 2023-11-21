@@ -1,11 +1,13 @@
-export const getBookings = async () => {}
+"use server";
 
-export const getBookingByCompany = async () => {}
+export const getBookings = async () => {};
 
-export const getMyBooking = async () => {}
+export const getBookingByCompany = async () => {};
 
-export const createBooking = async () => {}
+export const getMyBooking = async () => {};
 
-export const updateBooking = async () => {}
+export const createBooking = async () => {};
 
-export const deleteBooking = async () => {}
+export const updateBooking = async () => {};
+
+export const deleteBooking = async () => {};

@@ -1,7 +1,25 @@
-export const getAllCompany = async () => {}
+"use server";
 
-export const createCompany = async () => {}
+import { GetAllCompanyResponseType } from "@/types/company";
 
-export const updateCompany = async () => {}
+export const getAllCompany = async (
+  word?: string,
+): Promise<GetAllCompanyResponseType> => {
+  const path = word ? `/companies?word=${word.trim()}` : "/companies";
 
-export const deleteCompany = async () => {}
+  const resp = await fetch(`${process.env.BASE_BACKEND_URL}${path}`, {
+    next: {
+      revalidate: 60,
+      tags: ["company"],
+    },
+  });
+  const data = await resp.json();
+  console.log(data);
+  return data;
+};
+
+export const createCompany = async () => {};
+
+export const updateCompany = async () => {};
+
+export const deleteCompany = async () => {};
