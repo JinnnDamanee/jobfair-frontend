@@ -26,6 +26,7 @@ import { toast } from "@/components/ui/use-toast";
 import { BookingForm } from "@/components/BookingForm";
 import { MyBookingContainer } from "@/components/MyBookingContainer";
 import { CompanyInformation } from "@/components/CompanyInformation";
+import Link from "next/link";
 export default async function CompanyPage({
   params,
 }: {
@@ -46,7 +47,9 @@ export default async function CompanyPage({
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-xl font-bold">My Booking</h1>
           <Button variant="outline" size="icon">
-            <ChevronRight className="h-4 w-4" />
+            <Link href="/mybooking">
+              <ChevronRight className="h-4 w-4" />
+            </Link>
           </Button>
         </div>
         <MyBookingContainer />

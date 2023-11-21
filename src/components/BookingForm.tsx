@@ -107,7 +107,12 @@ const timeSlots = [
   { value: "14:00", label: "14:00 - 14.59" },
   { value: "15:00", label: "15.00 - 15.59" },
 ];
-export function BookingForm() {
+
+interface BookingFormProps {
+  setOpen?: (open: boolean) => void;
+}
+
+export function BookingForm({ setOpen }: BookingFormProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -120,6 +125,12 @@ export function BookingForm() {
     const combinedDateTime = `${format(data.bookingDate, "yyyy-MM-dd")} ${
       data.bookingTime
     }`;
+    // console.log("type", typeof setOpen); // Log the type
+    // console.log("value set open", setOpen); // Log the value
+    if (setOpen) {
+      setOpen(false);
+    }
+
     toast({
       title: "Schedule: New Booking Interview",
       // description: `${combinedDateTime}`,
@@ -212,31 +223,6 @@ export function BookingForm() {
                             </FormLabel>
                           </FormItem>
                         ))}
-                        {/* <FormItem className="mx-auto flex w-[320px]  flex-row items-center justify-start space-y-0 rounded-lg border p-3 text-center">
-                          <FormControl>
-                            <RadioGroupItem value="all" />
-                          </FormControl>
-                          <FormLabel className="px-2 text-base">
-                            09.00 - 09.59
-                          </FormLabel>
-                        </FormItem>
-
-                        <FormItem className="mx-auto flex w-[320px] flex-row items-center justify-start space-y-0 rounded-lg border p-3 text-center">
-                          <FormControl>
-                            <RadioGroupItem value="mentions" disabled={true} />
-                          </FormControl>
-                          <FormLabel className="px-2 text-base">
-                            10.00 - 10.59
-                          </FormLabel>
-                        </FormItem>
-                        <FormItem className="mx-auto flex w-[320px] flex-row items-center justify-start space-y-0 rounded-lg border p-3 text-center">
-                          <FormControl>
-                            <RadioGroupItem value="none" />
-                          </FormControl>
-                          <FormLabel className="px-2 text-base">
-                            11.00 - 11.59
-                          </FormLabel>
-                        </FormItem> */}
                       </RadioGroup>
                     </FormControl>
                     <FormMessage />
