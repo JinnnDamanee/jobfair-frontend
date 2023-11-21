@@ -36,9 +36,6 @@ export const authOptions: AuthOptions = {
           role: me.role,
           tel: me.tel,
         };
-        console.log("data", data);
-        console.log("user", user);
-
         return user;
       },
     }),

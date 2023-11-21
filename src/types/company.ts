@@ -1,4 +1,3 @@
-import { getAllCompany } from "@/actions/company";
 import { z } from "zod";
 
 export const companySchema = z.object({

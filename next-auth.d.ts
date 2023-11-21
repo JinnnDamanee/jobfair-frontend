@@ -23,6 +23,6 @@ declare module "next-auth" {
    * [`session` callback](https://next-auth.js.org/configuration/callbacks#jwt-callback)
    */
   interface Session {
-    user: User;
+    user: User & { token: string };
   }
 }

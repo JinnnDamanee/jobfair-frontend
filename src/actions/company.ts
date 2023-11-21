@@ -14,7 +14,6 @@ export const getAllCompany = async (
     },
   });
   const data = await resp.json();
-  console.log(data);
   return data;
 };
 
