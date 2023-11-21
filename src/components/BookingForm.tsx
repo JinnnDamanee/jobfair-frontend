@@ -42,14 +42,65 @@ const FormSchema = z.object({
     required_error: "A date of booking is required.",
   }),
   bookingTime: z.string({
-    required_error: "You need to select a time for interview type.",
+    required_error: "You need to select a time for interview.",
   }),
 });
+
+//Example from backend
+const responseData = {
+  success: true,
+  count: 2,
+  data: [
+    {
+      _id: "655c795acb47364966107245",
+      bookingDate: "2023-08-20T03:00:00.000Z",
+      user: {
+        _id: "6554a87e51aa444f93f02b37",
+        name: "TTBName",
+        email: "ttb@gmail.com",
+        tel: "012-345-6789",
+      },
+      company: {
+        _id: "655c7786cb47364966107239",
+        name: "TTB",
+        tel: "012345678",
+        id: "655c7786cb47364966107239",
+      },
+      createdAt: "2023-11-21T09:33:14.269Z",
+      __v: 0,
+    },
+    {
+      _id: "655c799bcb4736496610724f",
+      bookingDate: "2023-08-20T06:00:00.000Z",
+      user: {
+        _id: "6554a87e51aa444f93f02b37",
+        name: "TTBName",
+        email: "ttb@gmail.com",
+        tel: "012-345-6789",
+      },
+      company: {
+        _id: "655c7786cb47364966107239",
+        name: "TTB",
+        tel: "012345678",
+        id: "655c7786cb47364966107239",
+      },
+      createdAt: "2023-11-21T09:34:19.719Z",
+      __v: 0,
+    },
+  ],
+};
+
+//checking booking time slot
+const bookedTimes = responseData.data.map((booking) =>
+  format(new Date(booking.bookingDate), "HH:mm"),
+);
+
+// Function to check if a time slot is booked
+const isTimeBooked = (time: string) => bookedTimes.includes(time);
 
 const timeSlots = [
   { value: "09:00", label: "09.00 - 09.59" },
   { value: "10:00", label: "10.00 - 10.59" },
-  { value: "11:00", label: "11.00 - 11.59" },
   { value: "11:00", label: "11.00 - 11.59" },
   { value: "13:00", label: "13:00 - 13.59" },
   { value: "14:00", label: "14:00 - 14.59" },
@@ -61,13 +112,17 @@ export function BookingForm() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    const formattedDate = format(data.bookingDate, "PPp");
-    const selectedTime = data.bookingTime; // Access the selected time value
+    const formattedDate = format(data.bookingDate, "yyyy-MM-dd");
+    const selectedTime = data.bookingTime;
+    const combinedDateTime = `${format(data.bookingDate, "yyyy-MM-dd")} ${
+      data.bookingTime
+    }`;
     toast({
       title: "Schedule: New Booking Interview",
-      description: `${formattedDate} at ${selectedTime}`,
+      // description: `${combinedDateTime}`,
+      description: `${format(data.bookingDate, "PP")} at ${selectedTime}`,
     });
-    console.log(JSON.stringify(data, null, 2));
+    console.log(JSON.stringify(combinedDateTime, null, 2));
   }
 
   return (
@@ -83,8 +138,8 @@ export function BookingForm() {
               control={form.control}
               name="bookingDate"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Date</FormLabel>
+                <FormItem className="mx-auto flex w-[316px] flex-col">
+                  <FormLabel className="text-left">Date</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -125,15 +180,36 @@ export function BookingForm() {
                 control={form.control}
                 name="bookingTime"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Time</FormLabel>
+                  <FormItem className="mx-auto flex w-[316px] flex-col">
+                    {/* <FormItem className="space-y-3"> */}
+                    <FormLabel className="text-left">Time</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                         className="flex flex-col justify-center space-y-1"
                       >
-                        <FormItem className="mx-auto flex w-[320px]  flex-row items-center justify-start space-y-0 rounded-lg border p-3 text-center">
+                        {timeSlots.map((slot) => (
+                          <FormItem
+                            key={slot.value}
+                            className={`mx-auto flex w-[316px] flex-row items-center justify-start space-y-0 rounded-lg border p-3 text-center ${
+                              isTimeBooked(slot.value)
+                                ? "cursor-not-allowed opacity-50"
+                                : ""
+                            }`}
+                          >
+                            <FormControl>
+                              <RadioGroupItem
+                                value={slot.value}
+                                disabled={isTimeBooked(slot.value)}
+                              />
+                            </FormControl>
+                            <FormLabel className="text-normal px-2">
+                              {slot.label}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                        {/* <FormItem className="mx-auto flex w-[320px]  flex-row items-center justify-start space-y-0 rounded-lg border p-3 text-center">
                           <FormControl>
                             <RadioGroupItem value="all" />
                           </FormControl>
@@ -157,7 +233,7 @@ export function BookingForm() {
                           <FormLabel className="px-2 text-base">
                             11.00 - 11.59
                           </FormLabel>
-                        </FormItem>
+                        </FormItem> */}
                       </RadioGroup>
                     </FormControl>
                     <FormMessage />
@@ -166,8 +242,8 @@ export function BookingForm() {
               />
             </div>
           </div>
-          <CardFooter>
-            <Button type="submit" className="w-full">
+          <CardFooter className="flex justify-center">
+            <Button type="submit" className="w-[316px] ">
               Booking
             </Button>
           </CardFooter>
