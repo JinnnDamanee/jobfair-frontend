@@ -1,3 +1,4 @@
+import AuthBg from "@/components/AuthBackground";
 import { SignupForm } from "@/components/SignupForm";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function SignupPage() {
   return (
     <div className="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-5 lg:px-0">
-      <div className="col-span-2 lg:p-2">
+      <div className="col-span-2">
         <div className="mx-auto flex h-screen w-full flex-col justify-center space-y-8 sm:w-[350px]">
           <h1 className="text-4xl font-semibold tracking-tight">Register</h1>
           <SignupForm />
@@ -26,21 +27,10 @@ export default function SignupPage() {
           {/* <PolicyLinks /> */}
         </div>
       </div>
-      <BgSide />
+      <AuthBg />
     </div>
   );
 }
-
-const BgSide = () => {
-  return (
-    <div className="relative col-span-3 hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-foreground" />
-      <div className="relative z-20 flex items-center text-lg font-medium">
-        Job Fair 2023
-      </div>
-    </div>
-  );
-};
 
 const PolicyLinks = () => {
   return (

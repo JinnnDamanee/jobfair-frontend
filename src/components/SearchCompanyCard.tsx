@@ -19,9 +19,10 @@ export default function SearchCompanyCard({
   name,
   position,
   tel,
+  id,
 }: SearchCompanyCardProps) {
   return (
-    <Link href={"/test"}>
+    <Link href={`/company/${id}`}>
       <Card className="flex border-2 p-2 hover:border-primary hover:shadow-md">
         <div className="relative m-4 aspect-square w-[150px]">
           <Image src={image} alt={name} fill className="object-contain p-4" />
