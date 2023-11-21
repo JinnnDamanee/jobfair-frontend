@@ -5,8 +5,8 @@ import { Button } from "./ui/button";
 
 export default function Banner() {
   return (
-    <div className="via- container relative flex justify-between bg-gradient-to-tl from-[#FD6E7A] via-primary-foreground via-40% to-transparent to-60%">
-      <div className="z-20 flex-col py-[60px]">
+    <div className="container relative flex justify-between bg-gradient-to-tl from-[#FD6E7A] via-primary-foreground via-40% to-transparent to-60%">
+      <div className="z-20 flex-col py-[60px] max-[1150px]:px-10">
         <h1 className="text-[24px]">Get your Dream Jobs at</h1>
         <h1 className="text-[80px] font-bold text-primary">CP Job Fair</h1>
         <p className="w-[440px]">
@@ -25,7 +25,7 @@ export default function Banner() {
           </Button>
         </div>
       </div>
-      <div className="relative w-[600px]">
+      <div className="relative hidden w-[600px] min-[1150px]:flex">
         <Image
           src={"/computer.svg"}
           alt={"computer"}

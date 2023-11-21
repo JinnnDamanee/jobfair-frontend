@@ -12,15 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
+import { getServerSession } from "@/app/api/auth/[...nextauth]/route";
+import { notFound } from "next/navigation";
+import Route from "@/lib/route";
 
-const NavBar = () => {
-  const user: User = {
-    email: "punnapob.jdk@gmail.com",
-    role: Role.ADMIN,
-    id: "1",
-    name: "Punnapob",
-    tel: "0812345678",
-  };
+const NavBar = async () => {
+  const sess = await getServerSession();
+  const user = sess?.user;
 
   return (
     <header className="container sticky left-0 right-0 top-0 z-50 flex h-16 items-center justify-between bg-background/70 backdrop-blur-xl ">
@@ -37,12 +35,17 @@ const NavBar = () => {
           <div className="flex items-center gap-4 text-sm font-medium">
             <Link
               className="text-foreground transition-colors hover:text-foreground/90"
-              href="/login"
+              href={Route.LOGIN}
             >
               Login
             </Link>
-            <Button variant="outline" size="sm">
-              Sign up
+            <Button variant="outline" size="sm" asChild>
+              <Link
+                className="text-foreground transition-colors hover:text-foreground/90"
+                href={Route.SIGNUP}
+              >
+                Sign Up
+              </Link>
             </Button>
           </div>
         )}
