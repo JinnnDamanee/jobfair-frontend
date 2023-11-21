@@ -128,17 +128,17 @@ export function BookingForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Reservation</CardTitle>
+        <CardTitle className="text-xl">Reservation</CardTitle>
         <CardDescription>Select Available time to booking</CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="justify-center">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-0">
+          <div className="justify-center p-6 pt-2">
             <FormField
               control={form.control}
               name="bookingDate"
               render={({ field }) => (
-                <FormItem className="mx-auto flex w-[316px] flex-col">
+                <FormItem className="mx-auto flex flex-col md:w-[316px]">
                   <FormLabel className="text-left">Date</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -146,7 +146,7 @@ export function BookingForm() {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "mx-auto  w-[320px]  pl-3 text-left font-normal",
+                            "w-full pl-3  text-left  font-normal md:mx-auto md:w-[316px]",
                             !field.value && "text-muted-foreground",
                           )}
                         >
@@ -180,7 +180,7 @@ export function BookingForm() {
                 control={form.control}
                 name="bookingTime"
                 render={({ field }) => (
-                  <FormItem className="mx-auto flex w-[316px] flex-col">
+                  <FormItem className="mx-auto flex w-full flex-col md:w-[316px]">
                     {/* <FormItem className="space-y-3"> */}
                     <FormLabel className="text-left">Time</FormLabel>
                     <FormControl>
@@ -192,7 +192,7 @@ export function BookingForm() {
                         {timeSlots.map((slot) => (
                           <FormItem
                             key={slot.value}
-                            className={`mx-auto flex w-[316px] flex-row items-center justify-start space-y-0 rounded-lg border p-3 text-center ${
+                            className={`mx-auto flex w-full flex-row items-center justify-start space-y-0 rounded-lg border p-3 text-center md:w-[316px] ${
                               isTimeBooked(slot.value)
                                 ? "cursor-not-allowed opacity-50"
                                 : ""
