@@ -1,6 +1,6 @@
 enum Route {
   HOME = "/",
   LOGIN = "/login",
-  SIGNUP = "/register",
+  SIGNUP = "/signup",
 }
 export default Route;

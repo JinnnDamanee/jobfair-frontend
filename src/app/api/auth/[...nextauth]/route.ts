@@ -5,6 +5,7 @@ import {
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getMe, login } from "@/actions/auth";
 import NextAuth from "next-auth/next";
+import Route from "@/lib/route";
 
 export const authOptions: AuthOptions = {
   session: {
@@ -51,9 +52,8 @@ export const authOptions: AuthOptions = {
     },
   },
   pages: {
-    signIn: "/login",
-    signOut: "/logout",
-    newUser: "/register",
+    signIn: Route.LOGIN,
+    newUser: Route.SIGNUP,
   },
 };
 
