@@ -69,7 +69,7 @@ export default async function CompanyPage({
         <div id="right" className="md:w-1/3 md:p-4">
           <div className="mb-4 flex items-center justify-between">
             <h1 className="text-xl font-bold">My Booking</h1>
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" asChild>
               <Link href={Route.MYBOOKING}>
                 <ChevronRight className="h-4 w-4" />
               </Link>

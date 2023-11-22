@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { Button } from "./ui/button";
+import Link from "next/link";
+import Route from "@/lib/route";
 
 export default function Banner() {
   return (
@@ -14,7 +16,9 @@ export default function Banner() {
           viverra. Accumsan malesuada non orci purus eu malesuada ullamcorper
         </p>
         <div className="mt-4 space-x-4">
-          <Button variant="outline">Register</Button>
+          <Button variant="outline" asChild>
+            <Link href={Route.SIGNUP}>Register</Link>
+          </Button>
           <Button
             onClick={() => {
               window.location.href = "#search";

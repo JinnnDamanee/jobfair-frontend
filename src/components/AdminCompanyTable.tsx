@@ -51,7 +51,7 @@ export const columns: ColumnDef<Company>[] = [
   {
     accessorKey: "jd",
     header: () => <div className="">Job Description</div>,
-    cell: ({ row }) => <div>{row.getValue("jd")}</div>,
+    cell: ({ row }) => <div className="line-clamp-3">{row.getValue("jd")}</div>,
   },
   {
     accessorKey: "location",

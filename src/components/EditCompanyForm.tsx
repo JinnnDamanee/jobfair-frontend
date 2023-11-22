@@ -71,7 +71,6 @@ export default function EditCompanyForm({
         variant: "success",
       });
     }
-    form.reset();
   };
 
   return (

@@ -25,7 +25,7 @@ export async function CompanyInformation({ companyId }: { companyId: string }) {
           width={100}
           height={100}
           alt="Company Logo"
-          className="justify-center"
+          className="m-2 justify-center p-4"
         />
         <div className="space-y-1">
           <CardTitle className="text-xl font-bold">
