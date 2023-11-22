@@ -3,7 +3,6 @@ import { getServerSession } from "@/app/api/auth/[...nextauth]/route";
 import AdminBookingTable from "@/components/AdminBookingTable";
 import BackButton from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
 import Route from "@/lib/route";
 import { redirect } from "next/navigation";
 
@@ -18,7 +17,6 @@ const AdminBookingPage = async () => {
     <div className="container mt-[40px] space-y-10">
       <div className="space-y-4">
         <BackButton />
-
         <div className="flex justify-between">
           <h1 className="text-3xl font-bold">Manage Bookings</h1>
           <Button className="bg-muted-foreground">Add New Booking</Button>

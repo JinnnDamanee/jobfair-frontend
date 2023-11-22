@@ -48,8 +48,6 @@ export default function CreateCompanyForm({
       position: body.position,
       tel: body.tel,
     });
-    console.log(body);
-    console.log(res);
     if (!res.success) {
       toast({
         title: "Error",

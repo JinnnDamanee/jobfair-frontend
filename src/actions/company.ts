@@ -4,10 +4,12 @@ import { getServerSession } from "@/app/api/auth/[...nextauth]/route";
 import {
   Company,
   CreateCompanyRequestType,
+  DeleteCompanyResponseType,
   GetAllCompanyResponseType,
   UpdateCompanyRequestType,
 } from "@/types/company";
 import { Role } from "@/types/user";
+import { revalidateTag } from "next/cache";
 
 export const getAllCompany = async (
   word?: string,
@@ -16,7 +18,6 @@ export const getAllCompany = async (
 
   const resp = await fetch(`${process.env.BASE_BACKEND_URL}${path}`, {
     next: {
-      revalidate: 60,
       tags: ["company"],
     },
   });
@@ -28,7 +29,6 @@ export const getCompanyById = async (companyId: string): Promise<Company> => {
   const path = `/companies/${companyId}`;
   const resp = await fetch(`${process.env.BASE_BACKEND_URL}${path}`, {
     next: {
-      revalidate: 60,
       tags: ["company"],
     },
   });
@@ -62,7 +62,7 @@ export const createCompany = async ({
     }),
   });
   const data = await res.json();
-  console.log(data);
+  revalidateTag("company");
   return data;
 };
 
@@ -77,8 +77,9 @@ export const updateCompany = async ({
 }: UpdateCompanyRequestType) => {
   console.log("update");
   const sess = await getServerSession();
-  if (!sess || sess.user.role !== Role.ADMIN) return;
-
+  if (!sess || sess.user.role !== Role.ADMIN) {
+    throw new Error("Unauthorized");
+  }
   const res = await fetch(`${process.env.BASE_BACKEND_URL}/companies/${id}`, {
     method: "PUT",
     headers: {
@@ -94,10 +95,25 @@ export const updateCompany = async ({
       tel,
     }),
   });
-  console.log(res);
   const data = await res.json();
-  console.log(data);
+  revalidateTag("company");
   return data;
 };
 
-export const deleteCompany = async () => {};
+export const deleteCompany = async (
+  id: string,
+): Promise<DeleteCompanyResponseType> => {
+  const sess = await getServerSession();
+  if (!sess || sess.user.role !== Role.ADMIN) {
+    throw new Error("Unauthorized");
+  }
+  const res = await fetch(`${process.env.BASE_BACKEND_URL}/companies/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${sess?.user.token}`,
+    },
+  });
+  const data = await res.json();
+  revalidateTag("company");
+  return data;
+};

@@ -18,17 +18,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Company } from "@/types/company";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "@radix-ui/react-dialog";
-import { Label } from "@radix-ui/react-label";
+
+import Route from "@/lib/route";
 import Image from "next/image";
-import { DialogFooter, DialogHeader } from "./ui/dialog";
-import { Input } from "./ui/input";
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -37,8 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import Link from "next/link";
-import Route from "@/lib/route";
+import DeleteCompanyDialog from "./DeleteCompanyDialog";
 
 export const columns: ColumnDef<Company>[] = [
   {
@@ -104,58 +96,13 @@ export const columns: ColumnDef<Company>[] = [
             <DropdownMenuItem asChild>
               <Link href={Route.ADMIN_EDIT_COMPANY + `/${id}`}>Edit</Link>
             </DropdownMenuItem>
-            <DeleteCompanyDialog />
+            <DeleteCompanyDialog cid={id} />
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
   },
 ];
-
-export function DeleteCompanyDialog() {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <h1 className="text-bold m-1 rounded p-1 text-primary hover:bg-destructive-foreground">
-          Delete
-        </h1>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you re done.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
 
 type AdminCompanyTableProps = {
   companies: Company[];

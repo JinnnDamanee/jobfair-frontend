@@ -1,3 +1,4 @@
+import { deleteCompany } from "@/actions/company";
 import { z } from "zod";
 
 export const companySchema = z.object({
@@ -47,6 +48,11 @@ export const updateCompanyRequestSchema = z.object({
     ),
 });
 
+export const deleteCompanyResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.array(companySchema),
+});
+
 export type Company = z.infer<typeof companySchema>;
 export type GetAllCompanyResponseType = z.infer<
   typeof getAllCompanyResponseSchema
@@ -56,4 +62,7 @@ export type CreateCompanyRequestType = z.infer<
 >;
 export type UpdateCompanyRequestType = z.infer<
   typeof updateCompanyRequestSchema
+>;
+export type DeleteCompanyResponseType = z.infer<
+  typeof deleteCompanyResponseSchema
 >;

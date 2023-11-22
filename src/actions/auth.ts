@@ -46,7 +46,6 @@ export const getMe = async (token: string): Promise<User> => {
   const resp = await fetch(`${process.env.BASE_BACKEND_URL}/auth/me`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });

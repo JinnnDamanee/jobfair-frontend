@@ -12,11 +12,12 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatCellDate } from "@/lib/utils";
+import { type Booking } from "@/types/booking";
 import {
   Table,
   TableBody,
@@ -25,20 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { type Booking } from "@/types/booking";
-import { formatCellDate } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DeleteCompanyDialog } from "./AdminCompanyTable";
+import DeleteBookingDialog from "./DeleteBookingDialog";
 
 export const columns: ColumnDef<Booking>[] = [
   {
@@ -75,7 +63,7 @@ export const columns: ColumnDef<Booking>[] = [
     enableHiding: false,
     header: () => <div className="">Action</div>,
     cell: ({ row }) => {
-      const booking = row.original;
+      const { id } = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -87,7 +75,7 @@ export const columns: ColumnDef<Booking>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DeleteCompanyDialog />
+            <DeleteBookingDialog bid={id} />
           </DropdownMenuContent>
         </DropdownMenu>
       );
