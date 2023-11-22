@@ -40,12 +40,16 @@ export default async function CompanyPage({
   const sess = await getServerSession();
 
   return (
-    <div className={`flex flex-col px-10 ${sess ? "md:flex-row" : ""}`}>
+    <div
+      className={`px-auto flex flex-col space-y-4 ${
+        sess ? "xl:flex-row xl:px-10" : ""
+      }`}
+    >
       <div
         id="left"
         className={`${
-          sess ? "md:w-2/3 " : "item-center md:w-full"
-        } mx-auto md:p-4`}
+          sess ? "xl:w-2/3 " : "item-center md:w-full"
+        } mx-auto md:mx-6 md:p-4`}
       >
         {/* <Button variant="outline" className="mb-4">
           <ChevronLeft className="mr-2 h-4 w-4" /> Back
@@ -53,8 +57,8 @@ export default async function CompanyPage({
         <BackButton />
         <div
           id=""
-          className={`mx-auto mt-4   ${
-            sess ? "flex flex-col gap-4" : "space-y-4 md:w-2/3"
+          className={`mt-4   ${
+            sess ? "flex flex-col gap-4" : "mx-auto space-y-4 md:w-2/3"
           }`}
         >
           <CompanyInformation companyId={params.company_id} />
@@ -66,7 +70,7 @@ export default async function CompanyPage({
         </div>
       </div>
       {sess && (
-        <div id="right" className="md:w-1/3 md:p-4">
+        <div id="right" className="mx-auto md:mx-6 md:p-4 xl:w-1/3 xl:pt-0">
           <div className="mb-4 flex items-center justify-between">
             <h1 className="text-xl font-bold">My Booking</h1>
             <Button variant="outline" size="icon" asChild>
