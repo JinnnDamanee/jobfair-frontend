@@ -26,9 +26,7 @@ import {
   TableRow,
 } from "./ui/table";
 import { type Booking } from "@/types/booking";
-import dayjs from "dayjs";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-dayjs.extend(localizedFormat);
+import { formatCellDate } from "@/lib/utils";
 
 export const columns: ColumnDef<Booking>[] = [
   {
@@ -41,7 +39,7 @@ export const columns: ColumnDef<Booking>[] = [
     header: () => <div className="">Booking date</div>,
     cell: ({ row }) => (
       <div>
-        <p>{dayjs(row.getValue("bookingDate")).format("MMM D, YYYY h:mm A")}</p>
+        <p>{formatCellDate(row)}</p>
       </div>
     ),
   },

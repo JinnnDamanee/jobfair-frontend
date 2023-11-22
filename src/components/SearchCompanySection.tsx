@@ -8,6 +8,7 @@ import { Company } from "@/types/company";
 import { useEffect, useState } from "react";
 import { toast } from "./ui/use-toast";
 import { Skeleton } from "./ui/skeleton";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 type SearchCompanyProps = {
   search?: string;
