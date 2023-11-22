@@ -1,64 +1,33 @@
-"use client";
-
 import Banner from "@/components/Banner";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import SearchCompanySection from "@/components/SearchCompanySection";
+
+// const mockCompany: Company[] = [
+//   {
+//     id: "1",
+//     name: "TMBThanachart Bank Public Company Limited",
+//     position: "UX Research",
+//     image: "/ttb.png",
+//     jd: "UX Research",
+//     location: "Bangkok",
+//     tel: "0621432614",
+//   },
+//   {
+//     id: "2",
+//     name: "TMBThanachart Bank Public Company Limited",
+//     position: "Frontend Developer",
+//     image: "/ttb.png",
+//     jd: "Do Frontend",
+//     location: "Bangkok",
+//     tel: "0621432614",
+//   },
+// ];
 
 const Home = () => {
-  const [search, setSearch] = useState("");
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    ("TODO: Search");
-    console.log(search);
-  };
-
   return (
     <>
       <Banner />
-      <div id="search" className="container flex flex-col gap-4 p-10">
-        <form onSubmit={(e) => handleSearch(e)} className="flex gap-2">
-          <Input
-            placeholder="Search Company..."
-            onChange={(e) => {
-              if (e.target.value) {
-                setSearch(e.target.value);
-              }
-            }}
-          />
-          <Button type="submit">Search</Button>
-        </form>
-        <MockCard />
-        <MockCard />
-        <MockCard />
-        <MockCard />
-      </div>
+      <SearchCompanySection />
     </>
-  );
-};
-
-const MockCard = () => {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
-      </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter>
-    </Card>
   );
 };
 

@@ -96,10 +96,10 @@ const AdminPanelDropdown = () => {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/admin/booking">Manage Bookings</Link>
+          <Link href={Route.ADMINBOOKING}>Manage Bookings</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/admin/company">Company Information</Link>
+          <Link href={Route.ADMINCOMPANY}>Company Information</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
