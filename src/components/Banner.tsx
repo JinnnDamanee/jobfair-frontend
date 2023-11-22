@@ -9,11 +9,12 @@ export default function Banner() {
   return (
     <div className="container relative flex justify-between bg-gradient-to-tl from-[#FD6E7A] via-primary-foreground via-40% to-transparent to-60%">
       <div className="z-20 flex-col py-[60px] max-[1150px]:px-10">
-        <h1 className="text-[24px]">Get your Dream Jobs at</h1>
-        <h1 className="text-[80px] font-bold text-primary">CP Job Fair</h1>
-        <p className="w-[440px]">
-          Lorem ipsum dolor sit amet consectetur. Elit hac arcu quam lectus
-          viverra. Accumsan malesuada non orci purus eu malesuada ullamcorper
+        <h1 className="text-xl font-medium">Get your Dream Jobs at</h1>
+        <h1 className="my-4 text-7xl font-bold text-primary">CP Job Fair</h1>
+        <p className="xs:w-full md:w-[440px]">
+          Where opportunities meet ambition. Join us for a transformative
+          experience connecting top-tier employers with your potential. Your
+          future career starts here!
         </p>
         <div className="mt-4 space-x-4">
           <Button variant="outline" asChild>

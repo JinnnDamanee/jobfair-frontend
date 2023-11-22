@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Input } from "./ui/input";
 
 const NavBar = async () => {
   const sess = await getServerSession();
@@ -66,24 +65,12 @@ const LinkLogo = () => {
   );
 };
 
-const Search = () => {
-  return (
-    <div>
-      <Input
-        type="search"
-        placeholder="Search..."
-        className="md:w-[100px] lg:w-[300px]"
-      />
-    </div>
-  );
-};
-
 const AdminPanelDropdown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="rounded-full ring-offset-background focus-visible:outline-none ">
         <div className="flex items-center gap-2">
-          <p>Admin Management</p>
+          <p className="text-xs sm:text-base">Admin Management</p>
           <ChevronDown className="h-4 w-4" />
         </div>
       </DropdownMenuTrigger>
