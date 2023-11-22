@@ -1,4 +1,6 @@
-import { Role, type User } from "@/types/user";
+import { getServerSession } from "@/app/api/auth/[...nextauth]/route";
+import Route from "@/lib/route";
+import { Role } from "@/types/user";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,9 +14,6 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
-import { getServerSession } from "@/app/api/auth/[...nextauth]/route";
-import { notFound } from "next/navigation";
-import Route from "@/lib/route";
 
 const NavBar = async () => {
   const sess = await getServerSession();

@@ -17,22 +17,46 @@ import { deleteBooking } from "@/actions/booking";
 
 export default function DeleteBookingDialog({ bid }: { bid: string }) {
   const router = useRouter();
-  const onDelete = async () => {
-    // const resp = await deleteBooking();
-    // if (!resp.success) {
-    //   toast({
-    //     title: "Error",
-    //     description: "Failed to delete company",
-    //     variant: "destructive",
-    //   });
-    // } else {
-    //   toast({
-    //     title: "Success",
-    //     description: "Successfully deleted company",
-    //     variant: "success",
-    //   });
-    // }
-    // router.refresh();
+
+  const handleDelete = async () => {
+    try {
+      console.log("Deleting booking with id:", bid);
+
+      // Call the deleteBooking function
+      const deleteResult = await deleteBooking(bid);
+
+      // Check the result of the delete operation
+      if (deleteResult.success) {
+        console.log("Booking deleted successfully");
+        // Show a success toast
+        toast({
+          title: "Booking Deleted",
+          description: "The booking has been successfully deleted.",
+          variant: "success",
+          duration: 5000,
+        });
+        router.refresh();
+      } else {
+        console.error("Failed to delete booking:", deleteResult.message);
+        // Show an error toast
+        toast({
+          title: "Error",
+          description: `Failed to delete booking: ${deleteResult.message}`,
+          variant: "destructive",
+          duration: 5000,
+        });
+        // Handle the case where deletion failed, show an error message, etc.
+      }
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+      // Show an error toast
+      toast({
+        title: "Error",
+        description: "An error occurred while deleting the booking.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    }
   };
 
   return (
@@ -53,7 +77,7 @@ export default function DeleteBookingDialog({ bid }: { bid: string }) {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit" onClick={onDelete}>
+          <Button type="submit" onClick={handleDelete}>
             Delete
           </Button>
         </DialogFooter>

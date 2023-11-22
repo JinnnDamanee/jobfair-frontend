@@ -12,6 +12,7 @@ import { ChevronDown, UserIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import Route from "@/lib/route";
 
 type UserAccountNavProps = {
   user: User;
@@ -52,15 +53,14 @@ const UserAccountNav = ({ user }: UserAccountNavProps) => {
         )} */}
         {/* USER */}
         <DropdownMenuItem asChild>
-          <Link href="/mybooking">My Bookings</Link>
+          <Link href={Route.MYBOOKING}>My Bookings</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"
           onSelect={(e) => {
-            e.preventDefault();
             signOut({
-              callbackUrl: "/login",
+              callbackUrl: Route.LOGIN,
             });
           }}
         >

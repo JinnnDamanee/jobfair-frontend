@@ -26,71 +26,75 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import EditBookingDialog from "./EditBookingDialog";
+import { Session } from "next-auth";
 import DeleteBookingDialog from "./DeleteBookingDialog";
-
-export const columns: ColumnDef<Booking>[] = [
-  {
-    accessorKey: "id",
-    header: () => <div className="">Booking ID</div>,
-    cell: ({ row }) => <div>{row.getValue("id")}</div>,
-  },
-  {
-    accessorKey: "bookingDate",
-    header: () => <div className="">Booking date</div>,
-    cell: ({ row }) => (
-      <div>
-        <p>{formatCellDate(row)}</p>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "user",
-    header: () => <div className="">User ID</div>,
-    cell: ({ row }) => <div>{row.getValue("user")}</div>,
-  },
-  {
-    accessorKey: "company",
-    header: () => <div className="">Company ID</div>,
-    cell: ({ row }) => <div>{row.getValue("company")}</div>,
-  },
-  {
-    accessorKey: "createdAt",
-    header: () => <div className="">Booking at</div>,
-    cell: ({ row }) => <div>{<p>{formatCellDate(row)}</p>}</div>,
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    header: () => <div className="">Action</div>,
-    cell: ({ row }) => {
-      const { id } = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DeleteBookingDialog bid={id} />
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
 
 type AdminBookingTableProps = {
   bookings: Booking[];
+  session: Session;
 };
 
 export default function AdminBookingTable({
   bookings,
+  session,
 }: AdminBookingTableProps) {
-  console.log(bookings);
+  const columns: ColumnDef<Booking>[] = [
+    {
+      accessorKey: "id",
+      header: () => <div className="">Booking ID</div>,
+      cell: ({ row }) => <div>{row.getValue("id")}</div>,
+    },
+    {
+      accessorKey: "bookingDate",
+      header: () => <div className="">Booking date</div>,
+      cell: ({ row }) => (
+        <div>
+          <p>{formatCellDate(row)}</p>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "user",
+      header: () => <div className="">User ID</div>,
+      cell: ({ row }) => <div>{row.getValue("user")}</div>,
+    },
+    {
+      accessorKey: "company",
+      header: () => <div className="">Company ID</div>,
+      cell: ({ row }) => <div>{row.getValue("company")}</div>,
+    },
+    {
+      accessorKey: "createdAt",
+      header: () => <div className="">Booking at</div>,
+      cell: ({ row }) => <div>{<p>{formatCellDate(row)}</p>}</div>,
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      header: () => <div className="">Action</div>,
+      cell: ({ row }) => {
+        const { id, company } = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <EditBookingDialog bid={id} cid={company} session={session} />
+              <DeleteBookingDialog bid={id} />
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
+
   const table = useReactTable({
     data: bookings,
     columns,
