@@ -57,6 +57,9 @@ export default function MyBookingPage() {
   const [open, setOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bookings, setBookings] = useState<MyBooking[]>([]);
+  const [selectedBooking, setSelectedBooking] = useState<MyBooking | null>(
+    null,
+  );
 
   useEffect(() => {
     const fetchMyBooking = async () => {
@@ -173,7 +176,18 @@ export default function MyBookingPage() {
               </div>
             </CardContent>
             <CardFooter className="justify-end space-x-2 pb-4">
-              <Dialog key={booking.id} open={open} onOpenChange={setOpen}>
+              <Dialog
+                key={booking.id}
+                open={open && selectedBooking?.id === booking.id}
+                onOpenChange={(value: boolean) => {
+                  if (value) {
+                    setSelectedBooking(booking); // Set the selected booking when opening the dialog
+                  } else {
+                    setSelectedBooking(null);
+                  }
+                  setOpen(value);
+                }}
+              >
                 <DialogTrigger asChild>
                   <Button
                     variant="default"
@@ -194,8 +208,15 @@ export default function MyBookingPage() {
               </Dialog>
 
               <Dialog
-                open={deleteDialogOpen}
-                onOpenChange={setDeleteDialogOpen}
+                open={deleteDialogOpen && selectedBooking?.id === booking.id}
+                onOpenChange={(value: boolean) => {
+                  if (value) {
+                    setSelectedBooking(booking); // Set the selected booking when opening the dialog
+                  } else {
+                    setSelectedBooking(null);
+                  }
+                  setDeleteDialogOpen(value);
+                }}
               >
                 <DialogTrigger asChild>
                   <Button variant="default" className="mb-4">
