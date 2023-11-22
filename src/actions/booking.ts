@@ -5,6 +5,7 @@ import {
   GetAllBookingRespType,
   GetAllMyBookingRespType,
 } from "@/types/booking";
+import { revalidateTag } from "next/cache";
 
 export const getBookings = async (): Promise<GetAllBookingRespType> => {
   const sess = await getServerSession();
@@ -47,9 +48,6 @@ export const getBookingByCompany = async (
   const resp = await fetch(
     `${process.env.BASE_BACKEND_URL}/bookings/companies/${companyId}`,
     {
-      headers: {
-        Authorization: `Bearer ${sess?.user.token}`,
-      },
       next: {
         revalidate: 60,
         tags: ["booking"],
@@ -135,9 +133,73 @@ export const createBooking = async (companyId: string, requestData: string) => {
     },
   );
   const data = await resp.json();
+  revalidateTag('booking');
+
   return data;
 };
 
-export const updateBooking = async () => {};
+export const updateBooking = async (bookingId: string, requestData: string) => {
+  try {
+    const sess = await getServerSession();
+    if (!sess) {
+      throw new Error("No session");
+    }
 
-export const deleteBooking = async () => {};
+    const resp = await fetch(
+      `${process.env.BASE_BACKEND_URL}/bookings/${bookingId}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${sess?.user.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          bookingDate: requestData,
+        }),
+      },
+    );
+
+    const data = await resp.json();
+
+    // Revalidate the 'booking' tag after updating a booking
+    revalidateTag('booking');
+
+    return data;
+  } catch (error) {
+    // Handle errors...
+    console.error('Error updating booking:', error);
+    throw error; // Re-throw the error for the calling function to handle
+  }
+};
+
+export const deleteBooking = async (bookingId: string) => {
+  try {
+    const sess = await getServerSession();
+    if (!sess) {
+      throw new Error("No session");
+    }
+
+    const resp = await fetch(
+      `${process.env.BASE_BACKEND_URL}/bookings/${bookingId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${sess?.user.token}`,
+        },
+      },
+    );
+
+    if (!resp.ok) {
+      const errorData = await resp.json();
+      throw new Error(`Failed to delete booking: ${errorData.message}`);
+    }
+
+    // Revalidate the 'booking' tag after deleting a booking
+    revalidateTag('booking');
+
+    return { success: true, message: 'Booking deleted successfully' };
+  } catch (error) {
+    console.error('Error deleting booking:', error);
+    throw error; 
+  }
+};

@@ -2,7 +2,8 @@ enum Route {
   HOME = "/",
   LOGIN = "/login",
   SIGNUP = "/signup",
-
+  MYBOOKING = '/mybooking',
+  COMPANY = '/company',
   // ADMIN
   ADMIN_BOOKING = "/admin/booking",
   ADMIN_COMPANY = "/admin/company",
