@@ -1,9 +1,16 @@
 import { getBookings } from "@/actions/booking";
+import { getServerSession } from "@/app/api/auth/[...nextauth]/route";
 import AdminBookingTable from "@/components/AdminBookingTable";
 import BackButton from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import Route from "@/lib/route";
+import { redirect } from "next/navigation";
 
 const AdminBookingPage = async () => {
+  const sess = await getServerSession();
+  if (!sess || sess.user.role !== "admin") return redirect(Route.LOGIN);
+
   const resp = await getBookings();
   if (!resp.success) return null;
 
