@@ -54,7 +54,7 @@ import { getBookings, getMyBooking } from "@/actions/booking";
 export default async function MyBooking() {
   const resp = await getMyBooking();
   if (!resp.success) return null;
-  console.log("My booking", resp.data);
+  //   console.log("My booking", resp.data);
 
   return (
     <>

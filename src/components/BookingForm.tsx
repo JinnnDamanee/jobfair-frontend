@@ -37,6 +37,8 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { createBooking, getBookingByCompany } from "@/actions/booking";
+import { useEffect, useState } from "react";
 
 const FormSchema = z.object({
   bookingDate: z.date({
@@ -48,56 +50,55 @@ const FormSchema = z.object({
 });
 
 //Example from backend
-const responseData = {
-  success: true,
-  count: 2,
-  data: [
-    {
-      _id: "655c795acb47364966107245",
-      bookingDate: "2023-08-20T03:00:00.000Z",
-      user: {
-        _id: "6554a87e51aa444f93f02b37",
-        name: "TTBName",
-        email: "ttb@gmail.com",
-        tel: "012-345-6789",
-      },
-      company: {
-        _id: "655c7786cb47364966107239",
-        name: "TTB",
-        tel: "012345678",
-        id: "655c7786cb47364966107239",
-      },
-      createdAt: "2023-11-21T09:33:14.269Z",
-      __v: 0,
-    },
-    {
-      _id: "655c799bcb4736496610724f",
-      bookingDate: "2023-08-20T06:00:00.000Z",
-      user: {
-        _id: "6554a87e51aa444f93f02b37",
-        name: "TTBName",
-        email: "ttb@gmail.com",
-        tel: "012-345-6789",
-      },
-      company: {
-        _id: "655c7786cb47364966107239",
-        name: "TTB",
-        tel: "012345678",
-        id: "655c7786cb47364966107239",
-      },
-      createdAt: "2023-11-21T09:34:19.719Z",
-      __v: 0,
-    },
-  ],
-};
+// const responseData = {
+//   success: true,
+//   count: 2,
+//   data: [
+//     {
+//       _id: "655c795acb47364966107245",
+//       bookingDate: "2023-08-20T03:00:00.000Z",
+//       user: {
+//         _id: "6554a87e51aa444f93f02b37",
+//         name: "TTBName",
+//         email: "ttb@gmail.com",
+//         tel: "012-345-6789",
+//       },
+//       company: {
+//         _id: "655c7786cb47364966107239",
+//         name: "TTB",
+//         tel: "012345678",
+//         id: "655c7786cb47364966107239",
+//       },
+//       createdAt: "2023-11-21T09:33:14.269Z",
+//       __v: 0,
+//     },
+//     {
+//       _id: "655c799bcb4736496610724f",
+//       bookingDate: "2023-08-20T06:00:00.000Z",
+//       user: {
+//         _id: "6554a87e51aa444f93f02b37",
+//         name: "TTBName",
+//         email: "ttb@gmail.com",
+//         tel: "012-345-6789",
+//       },
+//       company: {
+//         _id: "655c7786cb47364966107239",
+//         name: "TTB",
+//         tel: "012345678",
+//         id: "655c7786cb47364966107239",
+//       },
+//       createdAt: "2023-11-21T09:34:19.719Z",
+//       __v: 0,
+//     },
+//   ],
+// };
 
-//checking booking time slot
-const bookedTimes = responseData.data.map((booking) =>
-  format(new Date(booking.bookingDate), "HH:mm"),
-);
+// //checking booking time slot
+// const bookedTimes = responseData.data.map((booking) =>
+//   format(new Date(booking.bookingDate), "HH:mm"),
+// );
 
 // Function to check if a time slot is booked
-const isTimeBooked = (time: string) => bookedTimes.includes(time);
 
 const timeSlots = [
   { value: "09:00", label: "09.00 - 09.59" },
@@ -109,38 +110,101 @@ const timeSlots = [
 ];
 
 interface BookingFormProps {
+  companyId?: string;
   setOpen?: (open: boolean) => void;
 }
-
-export function BookingForm({ setOpen }: BookingFormProps) {
+type FilterDayProps = {
+  date?: Date;
+};
+export function BookingForm({ companyId, setOpen }: BookingFormProps) {
   const { toast } = useToast();
+  // console.log("Company Id", companyId);
+  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
+  const isTimeBooked = (time: string) => bookedTimes.includes(time);
+
+  const searchCompany = async ({ date }: FilterDayProps) => {
+    console.log("date before fetching", date);
+    try {
+      // console.log("blaaaaaaaaa");
+      const companyBookResp = await getBookingByCompany(companyId);
+      console.log("Company Booking", companyBookResp.data);
+
+      if (!companyBookResp.success) {
+        toast({
+          title: "Error",
+          description: "Failed to get companies",
+        });
+      } else {
+        // Extract booked times based on the selected date
+        const filteredBookings = companyBookResp.data.filter((booking) => {
+          const bookingDate = new Date(booking.bookingDate);
+          const formattedBookingDate = format(bookingDate, "yyyy-MM-dd");
+          console.log("Formatted Booking Date", formattedBookingDate);
+
+          const formattedSelectedDate = format(
+            date ?? new Date(),
+            "yyyy-MM-dd",
+          );
+          console.log("Formatted Selected Date", formattedSelectedDate);
+
+          return formattedBookingDate === formattedSelectedDate;
+        });
+        const newBookedTimes = filteredBookings.map((booking) =>
+          format(new Date(booking.bookingDate), "HH:mm"),
+        );
+        setBookedTimes(newBookedTimes);
+      }
+    } catch (error) {
+      console.error("Error fetching company bookings:", error);
+      toast({
+        title: "Error",
+        description: "An error occurred while fetching companies",
+      });
+    }
+  };
+  useEffect(() => {
+    // Provide a default date or handle the undefined case
+    const defaultDate = new Date();
+    searchCompany({ date: defaultDate });
+  }, []);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     const formattedDate = format(data.bookingDate, "yyyy-MM-dd");
     const selectedTime = data.bookingTime;
     const combinedDateTime = `${format(data.bookingDate, "yyyy-MM-dd")} ${
       data.bookingTime
     }`;
+    if (!companyId) return null;
+    const res = await createBooking(companyId, combinedDateTime);
+    if (!res.success) {
+      toast({
+        title: "Error",
+        description: "Booking failed.",
+        variant: "success",
+        duration: 5000,
+      });
+    } else {
+      toast({
+        title: "Schedule: New Booking Interview",
+        description: `${format(data.bookingDate, "PP")} at ${selectedTime}`,
+      });
+    }
     // console.log("type", typeof setOpen); // Log the type
     // console.log("value set open", setOpen); // Log the value
     if (setOpen) {
       setOpen(false);
     }
 
-    toast({
-      title: "Schedule: New Booking Interview",
-      // description: `${combinedDateTime}`,
-      description: `${format(data.bookingDate, "PP")} at ${selectedTime}`,
-    });
     console.log(JSON.stringify(combinedDateTime, null, 2));
   }
 
   return (
     <Card>
+      <div></div>
       <CardHeader>
         <CardTitle className="text-xl">Reservation</CardTitle>
         <CardDescription>Select Available time to booking</CardDescription>
@@ -177,7 +241,10 @@ export function BookingForm({ setOpen }: BookingFormProps) {
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          searchCompany({ date: format(date, "yyyy-MM-dd") });
+                        }}
                         disabled={{ before: new Date() }}
                         initialFocus
                       />

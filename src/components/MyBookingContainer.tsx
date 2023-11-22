@@ -12,11 +12,27 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { getMyBooking } from "@/actions/booking";
 import { addMinutes, format } from "date-fns";
+import { getServerSession } from "@/app/api/auth/[...nextauth]/route";
 
 export async function MyBookingContainer() {
+  const sess = await getServerSession();
+  // console.log(sess);
+  // Check if the user is authenticated
+  // if (!sess) {
+  //   // Render a message prompting the user to log in
+  //   return (
+  //     <Card className="flex-1 p-4">
+  //       <p>Please log in to view your bookings.</p>
+  //       {/* You can optionally include a login button or a link to the login page */}
+  //       {/* <Button variant="primary" onClick={() => handleLogin()}>Log In</Button> */}
+  //     </Card>
+  //   );
+  // }
   const resp = await getMyBooking();
+
   if (!resp.success) return null;
-  console.log("My bookingingggg", resp.data);
+  // console.log("My bookingingggg", resp.data);
+
   return (
     <Card className="flex-1 p-4">
       <h3 className="mb-2 text-end text-base">Booked ({resp.data.length}/3)</h3>

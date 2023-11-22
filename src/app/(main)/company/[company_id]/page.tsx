@@ -28,6 +28,7 @@ import { MyBookingContainer } from "@/components/MyBookingContainer";
 import { CompanyInformation } from "@/components/CompanyInformation";
 import Link from "next/link";
 import BackButton from "@/components/BackButton";
+
 export default async function CompanyPage({
   params,
 }: {
@@ -40,9 +41,9 @@ export default async function CompanyPage({
           <ChevronLeft className="mr-2 h-4 w-4" /> Back
         </Button> */}
         <BackButton />
-        <div id="" className="flex flex-col gap-4">
+        <div id="" className="mt-4 flex flex-col gap-4">
           <CompanyInformation companyId={params.company_id} />
-          <BookingForm />
+          <BookingForm companyId={params.company_id} />
         </div>
       </div>
       <div className="md:w-1/3 md:p-4">

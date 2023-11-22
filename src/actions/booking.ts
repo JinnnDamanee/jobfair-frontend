@@ -35,6 +35,7 @@ export const getBookings = async (): Promise<GetAllBookingRespType> => {
 
 export const getBookingByCompany = async (  companyId?: string,  ): Promise<GetAllMyBookingRespType> => {
   const sess = await getServerSession();
+  // console.log("dataaaaaaaaaa", sess)
   const resp = await fetch(`${process.env.BASE_BACKEND_URL}/bookings/companies/${companyId}`, {
     headers: {
       Authorization: `Bearer ${sess?.user.token}`,
@@ -45,6 +46,7 @@ export const getBookingByCompany = async (  companyId?: string,  ): Promise<GetA
     },
   });
   const data = await resp.json();
+  // console.log("getBookingByCompany", data)
 
   const myData: GetAllMyBookingRespType = {
     success: data.success,
@@ -53,12 +55,13 @@ export const getBookingByCompany = async (  companyId?: string,  ): Promise<GetA
       return {
         id: b._id,
         bookingDate: b.bookingDate,
-        user: b.user._id,
+        user: b.user,
         company: b.company,
         createdAt: b.createdAt,
       };
     }),
   };
+  // console.log("AfterMappingData", myData)
 
   return myData;
 };
@@ -75,7 +78,7 @@ export const getMyBooking = async (): Promise<GetAllMyBookingRespType> => {
     },
   });
   const data = await resp.json();
-  // console.log("dataaaaaaaaaa", data)
+  // console.log("bookingggggggggggg", data)
   const myData: GetAllMyBookingRespType = {
     success: data.success,
     count: data.count,
@@ -99,7 +102,24 @@ export const getMyBooking = async (): Promise<GetAllMyBookingRespType> => {
   return myData;
 };
 
-export const createBooking = async () => {};
+export const createBooking = async (companyId:string, requestData: string) => {
+  const sess = await getServerSession();
+  if (!sess) {
+    throw new Error("No session");
+  }
+   const resp = await fetch(`${process.env.BASE_BACKEND_URL}/companies/${companyId}/bookings`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${sess?.user.token}`,
+      "Content-Type": "application/json",
+
+    },body: JSON.stringify({
+      bookingDate: requestData
+    }),
+    
+  });
+  const data = await resp.json();
+  return data;}
 
 export const updateBooking = async () => {};
 
