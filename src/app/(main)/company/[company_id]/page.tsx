@@ -27,6 +27,7 @@ import { BookingForm } from "@/components/BookingForm";
 import { MyBookingContainer } from "@/components/MyBookingContainer";
 import { CompanyInformation } from "@/components/CompanyInformation";
 import Link from "next/link";
+import BackButton from "@/components/BackButton";
 export default async function CompanyPage({
   params,
 }: {
@@ -35,9 +36,10 @@ export default async function CompanyPage({
   return (
     <div className="flex flex-col px-10 md:flex-row">
       <div className="md:w-2/3 md:p-4 ">
-        <Button variant="outline" className="mb-4">
+        {/* <Button variant="outline" className="mb-4">
           <ChevronLeft className="mr-2 h-4 w-4" /> Back
-        </Button>
+        </Button> */}
+        <BackButton />
         <div id="" className="flex flex-col gap-4">
           <CompanyInformation />
           <BookingForm />

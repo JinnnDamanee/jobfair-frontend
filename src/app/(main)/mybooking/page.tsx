@@ -49,6 +49,8 @@ import {
 } from "@/components/ui/dialog";
 import { BookingForm } from "@/components/BookingForm";
 import { useState } from "react";
+import BackButton from "@/components/BackButton";
+import { getBookings, getMyBooking } from "@/actions/booking";
 
 const mockBooking = [
   {
@@ -77,6 +79,7 @@ const mockBooking = [
 
 export default function MyBookingPage() {
   const [open, setOpen] = useState(false);
+
   const handleDelete = (bookingId: string) => {
     // Perform delete logic here
     console.log("Deleting booking with id:", bookingId);
@@ -86,9 +89,7 @@ export default function MyBookingPage() {
   return (
     <div id="booking-container" className="container flex flex-col gap-4 p-10">
       <div>
-        <Button variant="outline" className="">
-          <ChevronLeft className="mr-2 h-4 w-4" /> Back
-        </Button>
+        <BackButton />
       </div>
       <div>
         <h2 className="text-xl font-bold tracking-tight">My Booking</h2>
@@ -172,7 +173,7 @@ export default function MyBookingPage() {
                         Cancel
                       </Button>
                     </DialogClose>
-                  </DialogFooter>{" "}
+                  </DialogFooter>
                 </DialogContent>
               </Dialog>
             </CardFooter>
