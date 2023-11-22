@@ -26,7 +26,7 @@ export default function SearchCompanyCard({
       <Card className="flex border-2 p-2 hover:border-primary hover:shadow-md">
         <div className="relative m-4 aspect-square w-[150px]">
           {image.startsWith("https://") ? (
-            <Image src={image} alt={name} fill className="object-contain" />
+            <Image src={image} alt={name} fill className="object-contain p-6" />
           ) : (
             <Building2 className="h-full w-full p-8 text-muted-foreground" />
           )}

@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatCellDate } from "@/lib/utils";
-import { type Booking } from "@/types/booking";
+import { PopulatedBookingType, type Booking } from "@/types/booking";
 import {
   Table,
   TableBody,
@@ -29,9 +29,10 @@ import {
 import EditBookingDialog from "./EditBookingDialog";
 import { Session } from "next-auth";
 import DeleteBookingDialog from "./DeleteBookingDialog";
+import Image from "next/image";
 
 type AdminBookingTableProps = {
-  bookings: Booking[];
+  bookings: PopulatedBookingType[];
   session: Session;
 };
 
@@ -39,36 +40,89 @@ export default function AdminBookingTable({
   bookings,
   session,
 }: AdminBookingTableProps) {
-  const columns: ColumnDef<Booking>[] = [
+  console.log(bookings);
+
+  type ShowedBooking = {
+    id: string;
+    bookingDate: string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+    };
+    company: {
+      id: string;
+      name: string;
+      position: string;
+      image: string;
+    };
+    createdAt: string;
+  };
+
+  const columns: ColumnDef<ShowedBooking>[] = [
     {
       accessorKey: "id",
       header: () => <div className="">Booking ID</div>,
       cell: ({ row }) => <div>{row.getValue("id")}</div>,
     },
     {
+      accessorKey: "userId",
+      header: () => <div className="">User ID</div>,
+      cell: ({ row }) => {
+        return <div>{row.original.user.id}</div>;
+      },
+    },
+    {
+      accessorKey: "userName",
+      header: () => <div className="">User Name</div>,
+      cell: ({ row }) => {
+        return <div>{row.original.user.name}</div>;
+      },
+    },
+    {
+      accessorKey: "companyImage",
+      header: () => <div className="">Company Position</div>,
+      cell: ({ row }) => (
+        <Image
+          height={60}
+          width={60}
+          src={row.original.company.image}
+          alt={row.original.company.name}
+          className="m-2"
+        />
+      ),
+    },
+    {
+      accessorKey: "companyId",
+      header: () => <div className="">Company ID</div>,
+      cell: ({ row }) => <div>{row.original.company.id}</div>,
+    },
+    {
+      accessorKey: "companyName",
+      header: () => <div className="">Company Name</div>,
+      cell: ({ row }) => <div>{row.original.company.name}</div>,
+    },
+    {
+      accessorKey: "companyPosition",
+      header: () => <div className="">Company Position</div>,
+      cell: ({ row }) => <div>{row.original.company.position}</div>,
+    },
+    {
       accessorKey: "bookingDate",
       header: () => <div className="">Booking date</div>,
       cell: ({ row }) => (
         <div>
-          <p>{formatCellDate(row)}</p>
+          <p>{formatCellDate(row.getValue("bookingDate"))}</p>
         </div>
       ),
     },
-    {
-      accessorKey: "user",
-      header: () => <div className="">User ID</div>,
-      cell: ({ row }) => <div>{row.getValue("user")}</div>,
-    },
-    {
-      accessorKey: "company",
-      header: () => <div className="">Company ID</div>,
-      cell: ({ row }) => <div>{row.getValue("company")}</div>,
-    },
-    {
-      accessorKey: "createdAt",
-      header: () => <div className="">Booking at</div>,
-      cell: ({ row }) => <div>{<p>{formatCellDate(row)}</p>}</div>,
-    },
+    // {
+    //   accessorKey: "createdAt",
+    //   header: () => <div className="">Booking at</div>,
+    //   cell: ({ row }) => (
+    //     <div>{<p>{formatCellDate(row.getValue("createdAt"))}</p>}</div>
+    //   ),
+    // },
     {
       id: "actions",
       enableHiding: false,
@@ -86,7 +140,7 @@ export default function AdminBookingTable({
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <EditBookingDialog bid={id} cid={company} session={session} />
+              <EditBookingDialog bid={id} cid={company.id} session={session} />
               <DeleteBookingDialog bid={id} />
             </DropdownMenuContent>
           </DropdownMenu>

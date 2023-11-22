@@ -4,41 +4,51 @@ import { getServerSession } from "@/app/api/auth/[...nextauth]/route";
 import {
   GetAllBookingRespType,
   GetAllMyBookingRespType,
+  GetAllPopulatedBookingRespType,
 } from "@/types/booking";
 import { revalidateTag } from "next/cache";
 
-export const getBookings = async (): Promise<GetAllBookingRespType> => {
-  const sess = await getServerSession();
-  if (!sess) {
-    throw new Error("No session");
-  }
-  const resp = await fetch(`${process.env.BASE_BACKEND_URL}/bookings`, {
-    headers: {
-      Authorization: `Bearer ${sess?.user.token}`,
-    },
-    next: {
-      revalidate: 60,
-      tags: ["booking"],
-    },
-  });
-  const data = await resp.json();
+export const getBookings =
+  async (): Promise<GetAllPopulatedBookingRespType> => {
+    const sess = await getServerSession();
+    if (!sess) {
+      throw new Error("No session");
+    }
+    const resp = await fetch(`${process.env.BASE_BACKEND_URL}/bookings`, {
+      headers: {
+        Authorization: `Bearer ${sess?.user.token}`,
+      },
+      next: {
+        // revalidate: 60,
+        tags: ["booking"],
+      },
+    });
+    const data = await resp.json();
 
-  const myData: GetAllBookingRespType = {
-    success: data.success,
-    count: data.count,
-    data: data.data.map((b: any) => {
-      return {
-        id: b._id,
-        bookingDate: b.bookingDate,
-        user: b.user._id,
-        company: b.company._id,
-        createdAt: b.createdAt,
-      };
-    }),
+    const myData: GetAllPopulatedBookingRespType = {
+      success: data.success,
+      count: data.count,
+      data: data.data.map((b: any) => {
+        return {
+          id: b._id,
+          bookingDate: b.bookingDate,
+          createdAt: b.createdAt,
+          user: {
+            id: b.user._id,
+            name: b.user.name,
+            email: b.user.email,
+          },
+          company: {
+            id: b.company._id,
+            name: b.company.name,
+            image: b.company.image,
+            position: b.company.position,
+          },
+        };
+      }),
+    };
+    return myData;
   };
-
-  return myData;
-};
 
 export const getBookingByCompany = async (
   companyId?: string,
@@ -133,7 +143,7 @@ export const createBooking = async (companyId: string, requestData: string) => {
     },
   );
   const data = await resp.json();
-  revalidateTag('booking');
+  revalidateTag("booking");
 
   return data;
 };
@@ -162,12 +172,12 @@ export const updateBooking = async (bookingId: string, requestData: string) => {
     const data = await resp.json();
 
     // Revalidate the 'booking' tag after updating a booking
-    revalidateTag('booking');
+    revalidateTag("booking");
 
     return data;
   } catch (error) {
     // Handle errors...
-    console.error('Error updating booking:', error);
+    console.error("Error updating booking:", error);
     throw error; // Re-throw the error for the calling function to handle
   }
 };
@@ -195,11 +205,11 @@ export const deleteBooking = async (bookingId: string) => {
     }
 
     // Revalidate the 'booking' tag after deleting a booking
-    revalidateTag('booking');
+    revalidateTag("booking");
 
-    return { success: true, message: 'Booking deleted successfully' };
+    return { success: true, message: "Booking deleted successfully" };
   } catch (error) {
-    console.error('Error deleting booking:', error);
-    throw error; 
+    console.error("Error deleting booking:", error);
+    throw error;
   }
 };

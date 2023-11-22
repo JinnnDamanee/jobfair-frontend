@@ -37,31 +37,35 @@ export const getAllMyBookingResp = z.object({
   success: z.boolean(),
 });
 
-// export const bookingPopulatedSchema = bookingSchema.extend({
-//   user: z.object({
-//     _id: z.string(),
-//     name: z.string(),
-//     email: z.string().email(),
-//   }),
-//   company: z.object({
-//     _id: z.string(),
-//     name: z.string(),
-//     image: z.string(),
-//     tel: z.string(),
-//   }),
-// });
+export const bookingPopulatedSchema = z.object({
+  id: z.string(),
+  bookingDate: z.string().datetime(),
+  createdAt: z.string().datetime(),
+  user: z.object({
+    id: z.string(),
+    name: z.string(),
+    email: z.string().email(),
+  }),
+  company: z.object({
+    id: z.string(),
+    name: z.string(),
+    image: z.string(),
+    position: z.string(),
+  }),
+});
 
-// export const getAllPopulatedBookingResp = z.object({
-//   data: z.array(bookingPopulatedSchema),
-//   count: z.number(),
-//   success: z.boolean(),
-// });
+export const getAllPopulatedBookingResp = z.object({
+  data: z.array(bookingPopulatedSchema),
+  count: z.number(),
+  success: z.boolean(),
+});
 
 export type Booking = z.infer<typeof bookingSchema>;
 export type GetAllBookingRespType = z.infer<typeof getAllBookingResp>;
 export type MyBooking = z.infer<typeof myBookingSchema>;
 export type GetAllMyBookingRespType = z.infer<typeof getAllMyBookingResp>;
+export type PopulatedBookingType = z.infer<typeof bookingPopulatedSchema>;
 
-// export type GetAllPopulatedBookingRespType = z.infer<
-//   typeof getAllPopulatedBookingResp
-// >;
+export type GetAllPopulatedBookingRespType = z.infer<
+  typeof getAllPopulatedBookingResp
+>;

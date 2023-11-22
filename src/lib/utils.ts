@@ -11,6 +11,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCellDate(row: any) {
-  return format(new Date(row.getValue("bookingDate")), "MMM dd, yyyy HH:mm");
+export function formatCellDate(date: any) {
+  return format(new Date(date), "MMM dd, yyyy HH:mm");
 }
