@@ -47,9 +47,6 @@ export const getBookingByCompany = async (
   const resp = await fetch(
     `${process.env.BASE_BACKEND_URL}/bookings/companies/${companyId}`,
     {
-      headers: {
-        Authorization: `Bearer ${sess?.user.token}`,
-      },
       next: {
         revalidate: 60,
         tags: ["booking"],

@@ -39,66 +39,18 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { createBooking, getBookingByCompany } from "@/actions/booking";
 import { useEffect, useState } from "react";
+import { revalidateTag } from "next/cache";
 
 const FormSchema = z.object({
-  bookingDate: z.date({
-    required_error: "A date of booking is required.",
-  }),
+  bookingDate: z
+    .date({
+      required_error: "A date of booking is required.",
+    })
+    .default(new Date()),
   bookingTime: z.string({
     required_error: "You need to select a time for interview.",
   }),
 });
-
-//Example from backend
-// const responseData = {
-//   success: true,
-//   count: 2,
-//   data: [
-//     {
-//       _id: "655c795acb47364966107245",
-//       bookingDate: "2023-08-20T03:00:00.000Z",
-//       user: {
-//         _id: "6554a87e51aa444f93f02b37",
-//         name: "TTBName",
-//         email: "ttb@gmail.com",
-//         tel: "012-345-6789",
-//       },
-//       company: {
-//         _id: "655c7786cb47364966107239",
-//         name: "TTB",
-//         tel: "012345678",
-//         id: "655c7786cb47364966107239",
-//       },
-//       createdAt: "2023-11-21T09:33:14.269Z",
-//       __v: 0,
-//     },
-//     {
-//       _id: "655c799bcb4736496610724f",
-//       bookingDate: "2023-08-20T06:00:00.000Z",
-//       user: {
-//         _id: "6554a87e51aa444f93f02b37",
-//         name: "TTBName",
-//         email: "ttb@gmail.com",
-//         tel: "012-345-6789",
-//       },
-//       company: {
-//         _id: "655c7786cb47364966107239",
-//         name: "TTB",
-//         tel: "012345678",
-//         id: "655c7786cb47364966107239",
-//       },
-//       createdAt: "2023-11-21T09:34:19.719Z",
-//       __v: 0,
-//     },
-//   ],
-// };
-
-// //checking booking time slot
-// const bookedTimes = responseData.data.map((booking) =>
-//   format(new Date(booking.bookingDate), "HH:mm"),
-// );
-
-// Function to check if a time slot is booked
 
 const timeSlots = [
   { value: "09:00", label: "09.00 - 09.59" },
@@ -118,17 +70,16 @@ type FilterDayProps = {
 };
 export function BookingForm({ companyId, setOpen }: BookingFormProps) {
   const { toast } = useToast();
-  // console.log("Company Id", companyId);
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const isTimeBooked = (time: string) => bookedTimes.includes(time);
 
   const searchCompany = async ({ date }: FilterDayProps) => {
-    console.log("date before fetching", date);
+    console.log("date from calendar", date);
     try {
-      // console.log("blaaaaaaaaa");
       const companyBookResp = await getBookingByCompany(companyId);
       console.log("Company Booking", companyBookResp.data);
-
+      const filterDate = format(date || new Date(), "yyyy-MM-dd");
+      console.log("Format filter date", filterDate);
       if (!companyBookResp.success) {
         toast({
           title: "Error",
@@ -138,20 +89,19 @@ export function BookingForm({ companyId, setOpen }: BookingFormProps) {
         // Extract booked times based on the selected date
         const filteredBookings = companyBookResp.data.filter((booking) => {
           const bookingDate = new Date(booking.bookingDate);
-          const formattedBookingDate = format(bookingDate, "yyyy-MM-dd");
-          console.log("Formatted Booking Date", formattedBookingDate);
-
-          const formattedSelectedDate = format(
-            date ?? new Date(),
-            "yyyy-MM-dd",
-          );
-          console.log("Formatted Selected Date", formattedSelectedDate);
-
-          return formattedBookingDate === formattedSelectedDate;
+          const formatBookingDate = format(bookingDate, "yyyy-MM-dd");
+          // console.log(
+          //   "Booking Date",
+          //   formatBookingDate,
+          //   formatBookingDate === filterDate,
+          // );
+          return formatBookingDate === filterDate;
         });
+        console.log("after filtering", filteredBookings);
         const newBookedTimes = filteredBookings.map((booking) =>
           format(new Date(booking.bookingDate), "HH:mm"),
         );
+        // console.log(newBookedTimes);
         setBookedTimes(newBookedTimes);
       }
     } catch (error) {
@@ -182,12 +132,14 @@ export function BookingForm({ companyId, setOpen }: BookingFormProps) {
     const res = await createBooking(companyId, combinedDateTime);
     if (!res.success) {
       toast({
-        title: "Error",
-        description: "Booking failed.",
-        variant: "success",
+        title: "Booking failed.",
+        description: res.message,
+        variant: "destructive",
         duration: 5000,
       });
+      console.log(res);
     } else {
+      revalidateTag("booking");
       toast({
         title: "Schedule: New Booking Interview",
         description: `${format(data.bookingDate, "PP")} at ${selectedTime}`,
@@ -231,7 +183,7 @@ export function BookingForm({ companyId, setOpen }: BookingFormProps) {
                           {field.value ? (
                             format(field.value, "PPP")
                           ) : (
-                            <span>Pick a date</span>
+                            <span>{format(new Date(), "PPP")}</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -243,7 +195,7 @@ export function BookingForm({ companyId, setOpen }: BookingFormProps) {
                         selected={field.value}
                         onSelect={(date) => {
                           field.onChange(date);
-                          searchCompany({ date: format(date, "yyyy-MM-dd") });
+                          searchCompany({ date });
                         }}
                         disabled={{ before: new Date() }}
                         initialFocus
