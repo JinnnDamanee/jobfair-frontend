@@ -1,6 +1,6 @@
 "use server";
 
-import { GetAllCompanyResponseType } from "@/types/company";
+import { Company, GetAllCompanyResponseType } from "@/types/company";
 
 export const getAllCompany = async (
   word?: string,
@@ -15,6 +15,18 @@ export const getAllCompany = async (
   });
   const data = await resp.json();
   return data;
+};
+
+export const getCompanyById = async (companyId:string): Promise<Company>  => {
+    const path = `/companies/${companyId}`;
+    const resp = await fetch(`${process.env.BASE_BACKEND_URL}${path}`, {
+      next: {
+        revalidate: 60,
+        tags: ["company"],
+      },
+    });
+    const data = await resp.json();
+    return data.data;
 };
 
 export const createCompany = async () => {};
