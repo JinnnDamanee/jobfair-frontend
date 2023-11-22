@@ -17,7 +17,7 @@ export const getBookings = async (): Promise<GetAllBookingRespType> => {
       Authorization: `Bearer ${sess?.user.token}`,
     },
     next: {
-      revalidate: 60,
+      // revalidate: 60,
       tags: ["booking"],
     },
   });
@@ -49,7 +49,7 @@ export const getBookingByCompany = async (
     `${process.env.BASE_BACKEND_URL}/bookings/companies/${companyId}`,
     {
       next: {
-        revalidate: 60,
+        // revalidate: 60,
         tags: ["booking"],
       },
     },
@@ -84,7 +84,7 @@ export const getMyBooking = async (): Promise<GetAllMyBookingRespType> => {
         Authorization: `Bearer ${sess?.user.token}`,
       },
       next: {
-        revalidate: 60,
+        // revalidate: 60,
         tags: ["booking"],
       },
     },

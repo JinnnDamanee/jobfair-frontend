@@ -183,7 +183,7 @@ export function BookingForm({
         `Booking ${purpose === "create" ? "created" : "updated"}:`,
         data,
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         `Error ${purpose === "create" ? "creating" : "updating"} booking:`,
         error,
