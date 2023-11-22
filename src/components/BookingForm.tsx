@@ -37,7 +37,11 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { createBooking, getBookingByCompany } from "@/actions/booking";
+import {
+  createBooking,
+  getBookingByCompany,
+  updateBooking,
+} from "@/actions/booking";
 import { useEffect, useState } from "react";
 import { revalidateTag } from "next/cache";
 
@@ -63,12 +67,19 @@ const timeSlots = [
 
 interface BookingFormProps {
   companyId?: string;
+  purpose?: "update" | "create";
+  editBookingId?: string;
   setOpen?: (open: boolean) => void;
 }
 type FilterDayProps = {
   date?: Date;
 };
-export function BookingForm({ companyId, setOpen }: BookingFormProps) {
+export function BookingForm({
+  companyId,
+  setOpen,
+  purpose,
+  editBookingId,
+}: BookingFormProps) {
   const { toast } = useToast();
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const isTimeBooked = (time: string) => bookedTimes.includes(time);
@@ -129,29 +140,69 @@ export function BookingForm({ companyId, setOpen }: BookingFormProps) {
       data.bookingTime
     }`;
     if (!companyId) return null;
-    const res = await createBooking(companyId, combinedDateTime);
-    if (!res.success) {
+    try {
+      let res;
+      if (purpose === "create") {
+        res = await createBooking(companyId, combinedDateTime);
+      } else if (purpose === "update") {
+        if (editBookingId) {
+          res = await updateBooking(editBookingId, combinedDateTime);
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "There was a problem with your booking id.",
+          });
+          console.error("editBookingId is undefined");
+          return;
+        }
+      }
+
+      if (!res.success) {
+        toast({
+          title: `Booking ${
+            purpose === "create" ? "failed" : "update failed"
+          }.`,
+          description: res.message,
+          variant: "destructive",
+          duration: 5000,
+        });
+        console.error(res);
+      } else {
+        toast({
+          title: `Schedule: New Booking Interview${
+            purpose === "update" ? " updated" : ""
+          }`,
+          description: `${format(data.bookingDate, "PP")} at ${selectedTime}`,
+        });
+      }
+
+      console.log(
+        `Booking ${purpose === "create" ? "created" : "updated"}:`,
+        data,
+      );
+    } catch (error) {
+      console.error(
+        `Error ${purpose === "create" ? "creating" : "updating"} booking:`,
+        error,
+      );
       toast({
-        title: "Booking failed.",
-        description: res.message,
-        variant: "destructive",
-        duration: 5000,
-      });
-      console.log(res);
-    } else {
-      revalidateTag("booking");
-      toast({
-        title: "Schedule: New Booking Interview",
-        description: `${format(data.bookingDate, "PP")} at ${selectedTime}`,
+        title: "Error",
+        description: `An error occurred while ${
+          purpose === "create" ? "creating" : "updating"
+        } the booking`,
       });
     }
+
+    // Optionally reset the form after submission
+
     // console.log("type", typeof setOpen); // Log the type
     // console.log("value set open", setOpen); // Log the value
     if (setOpen) {
       setOpen(false);
     }
 
-    console.log(JSON.stringify(combinedDateTime, null, 2));
+    // console.log(JSON.stringify(combinedDateTime, null, 2));
   }
 
   return (
@@ -252,7 +303,7 @@ export function BookingForm({ companyId, setOpen }: BookingFormProps) {
           </div>
           <CardFooter className="flex justify-center">
             <Button type="submit" className="w-[316px] ">
-              Booking
+              {purpose === "update" ? "Updating" : "Booking"}
             </Button>
           </CardFooter>
         </form>

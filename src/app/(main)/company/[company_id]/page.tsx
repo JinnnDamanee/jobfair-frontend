@@ -43,7 +43,7 @@ export default async function CompanyPage({
         <BackButton />
         <div id="" className="mt-4 flex flex-col gap-4">
           <CompanyInformation companyId={params.company_id} />
-          <BookingForm companyId={params.company_id} />
+          <BookingForm companyId={params.company_id} purpose="create" />
         </div>
       </div>
       <div className="md:w-1/3 md:p-4">

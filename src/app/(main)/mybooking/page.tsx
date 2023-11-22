@@ -48,42 +48,83 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { BookingForm } from "@/components/BookingForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackButton from "@/components/BackButton";
-import { getBookings, getMyBooking } from "@/actions/booking";
-
-const mockBooking = [
-  {
-    _id: "655c795acb47364966107245",
-    bookingDate: "2023-08-20T03:00:00.000Z",
-    user: "6554a87e51aa444f93f02b37",
-    company: {
-      _id: "655c7786cb47364966107239",
-      name: "TTB",
-      tel: "012345678",
-      id: "655c7786cb47364966107239",
-    },
-  },
-  {
-    _id: "655c799bcb4736496610724f",
-    bookingDate: "2023-08-20T06:00:00.000Z",
-    user: "6554a87e51aa444f93f02b37",
-    company: {
-      _id: "655c7786cb47364966107239",
-      name: "TTB",
-      tel: "012345678",
-      id: "655c7786cb47364966107239",
-    },
-  },
-];
+import { deleteBooking, getBookings, getMyBooking } from "@/actions/booking";
+import { MyBooking } from "@/types/booking";
 
 export default function MyBookingPage() {
   const [open, setOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [bookings, setBookings] = useState<MyBooking[]>([]);
 
-  const handleDelete = (bookingId: string) => {
-    // Perform delete logic here
-    console.log("Deleting booking with id:", bookingId);
-    setOpen(false); // Optionally close the dialog
+  useEffect(() => {
+    const fetchMyBooking = async () => {
+      try {
+        const resp = await getMyBooking();
+        console.log(resp);
+        if (resp.success) {
+          setBookings(resp.data);
+        } else {
+          toast({
+            title: "Error",
+            description: "Failed to fetch bookings",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+        toast({
+          title: "Error",
+          description: "An error occurred while fetching bookings",
+        });
+      }
+    };
+
+    fetchMyBooking();
+  }, []);
+  //   console.log(bookings);
+  const handleDelete = async (bookingId: string) => {
+    try {
+      console.log("Deleting booking with id:", bookingId);
+
+      // Call the deleteBooking function
+      const deleteResult = await deleteBooking(bookingId);
+
+      // Check the result of the delete operation
+      if (deleteResult.success) {
+        console.log("Booking deleted successfully");
+        // Show a success toast
+        toast({
+          title: "Booking Deleted",
+          description: "The booking has been successfully deleted.",
+          variant: "success",
+          duration: 5000,
+        });
+        // Optionally close the dialog
+        setDeleteDialogOpen(false);
+      } else {
+        console.error("Failed to delete booking:", deleteResult.message);
+        // Show an error toast
+        toast({
+          title: "Error",
+          description: `Failed to delete booking: ${deleteResult.message}`,
+          variant: "destructive",
+          duration: 5000,
+        });
+        // Handle the case where deletion failed, show an error message, etc.
+      }
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+      // Show an error toast
+      toast({
+        title: "Error",
+        description: "An error occurred while deleting the booking.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    }
+    // console.log("Deleting booking with id:", bookingId);
+    // setDeleteDialogOpen(false); // Optionally close the dialog
   };
 
   return (
@@ -100,11 +141,11 @@ export default function MyBookingPage() {
       <Separator className="my-4" />
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
-        {mockBooking.map((booking: any) => (
-          <Card key={booking._id}>
+        {bookings.map((booking: any) => (
+          <Card key={booking.id}>
             <CardHeader className="grid grid-cols-[auto,1fr] items-center gap-6 pb-4">
               <Image
-                src="/ttb.png"
+                src={booking.company.image}
                 width={40}
                 height={40}
                 alt="Company Logo"
@@ -112,7 +153,7 @@ export default function MyBookingPage() {
               />
               <div className="space-y-1">
                 <CardTitle className="text-start text-xl font-bold">
-                  Job Title
+                  {booking.company.position}
                 </CardTitle>
                 <CardDescription className="text-start text-sm text-gray-600">
                   {booking.company.name}
@@ -132,7 +173,7 @@ export default function MyBookingPage() {
               </div>
             </CardContent>
             <CardFooter className="justify-end space-x-2 pb-4">
-              <Dialog key={booking._id} open={open} onOpenChange={setOpen}>
+              <Dialog key={booking.id} open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                   <Button
                     variant="default"
@@ -143,10 +184,19 @@ export default function MyBookingPage() {
                 </DialogTrigger>
 
                 <DialogContent>
-                  <BookingForm setOpen={setOpen} />
+                  <BookingForm
+                    companyId={booking.company.id}
+                    setOpen={setOpen}
+                    purpose="update"
+                    editBookingId={booking.id}
+                  />
                 </DialogContent>
               </Dialog>
-              <Dialog open={open} onOpenChange={setOpen}>
+
+              <Dialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+              >
                 <DialogTrigger asChild>
                   <Button variant="default" className="mb-4">
                     <Trash2 className="mr-2 h-4 w-4" /> Delete
@@ -164,7 +214,7 @@ export default function MyBookingPage() {
                     <Button
                       type="button"
                       variant="default"
-                      onClick={() => handleDelete(booking._id)}
+                      onClick={() => handleDelete(booking.id)}
                     >
                       Delete
                     </Button>
