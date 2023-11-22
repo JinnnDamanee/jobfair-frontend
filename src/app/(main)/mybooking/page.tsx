@@ -1,33 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Clock, ChevronLeft, CalendarIcon, Trash2, Pencil } from "lucide-react";
+import { CalendarIcon, Clock, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Calendar } from "@/components/ui/calendar";
 
-import { cn } from "@/lib/utils";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useToast } from "@/components/ui/use-toast";
-import * as z from "zod";
-
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { toast } from "@/components/ui/use-toast";
 
+import { deleteBooking, getMyBooking } from "@/actions/booking";
+import BackButton from "@/components/BackButton";
+import { BookingForm } from "@/components/BookingForm";
 import {
   Card,
   CardContent,
@@ -36,7 +17,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { format, addMinutes } from "date-fns";
 import {
   Dialog,
   DialogClose,
@@ -47,11 +27,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { BookingForm } from "@/components/BookingForm";
-import { useEffect, useState } from "react";
-import BackButton from "@/components/BackButton";
-import { deleteBooking, getBookings, getMyBooking } from "@/actions/booking";
 import { MyBooking } from "@/types/booking";
+import { addMinutes, format } from "date-fns";
+import { useEffect, useState } from "react";
 
 export default function MyBookingPage() {
   const [open, setOpen] = useState(false);
@@ -223,15 +201,19 @@ export default function MyBookingPage() {
                     <Trash2 className="mr-2 h-4 w-4" /> Delete
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
-                    <DialogTitle>Confirm Deletion</DialogTitle>
+                    <DialogTitle>Delete Booking</DialogTitle>
                     <DialogDescription>
                       Are you sure you want to delete this booking?
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="flex items-center space-x-2"></div>
-                  <DialogFooter className="sm:justify-start md:justify-center">
+                  <DialogFooter className="">
+                    <DialogClose asChild>
+                      <Button type="button" variant="secondary">
+                        Cancel
+                      </Button>
+                    </DialogClose>
                     <Button
                       type="button"
                       variant="default"
@@ -239,11 +221,6 @@ export default function MyBookingPage() {
                     >
                       Delete
                     </Button>
-                    <DialogClose asChild>
-                      <Button type="button" variant="secondary">
-                        Cancel
-                      </Button>
-                    </DialogClose>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

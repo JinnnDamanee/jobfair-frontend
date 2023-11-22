@@ -44,6 +44,10 @@ import {
 } from "@/actions/booking";
 import { useEffect, useState } from "react";
 import { revalidateTag } from "next/cache";
+import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
+import Route from "@/lib/route";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   bookingDate: z
@@ -70,27 +74,28 @@ interface BookingFormProps {
   purpose?: "update" | "create";
   editBookingId?: string;
   setOpen?: (open: boolean) => void;
+  session?: Session | null;
 }
 type FilterDayProps = {
   date?: Date;
 };
+
 export function BookingForm({
   companyId,
   setOpen,
   purpose,
   editBookingId,
+  session,
 }: BookingFormProps) {
   const { toast } = useToast();
+  const route = useRouter();
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const isTimeBooked = (time: string) => bookedTimes.includes(time);
 
   const searchCompany = async ({ date }: FilterDayProps) => {
-    console.log("date from calendar", date);
     try {
       const companyBookResp = await getBookingByCompany(companyId);
-      console.log("Company Booking", companyBookResp.data);
       const filterDate = format(date || new Date(), "yyyy-MM-dd");
-      console.log("Format filter date", filterDate);
       if (!companyBookResp.success) {
         toast({
           title: "Error",
@@ -101,18 +106,12 @@ export function BookingForm({
         const filteredBookings = companyBookResp.data.filter((booking) => {
           const bookingDate = new Date(booking.bookingDate);
           const formatBookingDate = format(bookingDate, "yyyy-MM-dd");
-          // console.log(
-          //   "Booking Date",
-          //   formatBookingDate,
-          //   formatBookingDate === filterDate,
-          // );
+
           return formatBookingDate === filterDate;
         });
-        console.log("after filtering", filteredBookings);
         const newBookedTimes = filteredBookings.map((booking) =>
           format(new Date(booking.bookingDate), "HH:mm"),
         );
-        // console.log(newBookedTimes);
         setBookedTimes(newBookedTimes);
       }
     } catch (error) {
@@ -134,6 +133,9 @@ export function BookingForm({
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (!session) {
+      route.push(Route.LOGIN);
+    }
     const formattedDate = format(data.bookingDate, "yyyy-MM-dd");
     const selectedTime = data.bookingTime;
     const combinedDateTime = `${format(data.bookingDate, "yyyy-MM-dd")} ${
@@ -186,12 +188,21 @@ export function BookingForm({
         `Error ${purpose === "create" ? "creating" : "updating"} booking:`,
         error,
       );
-      toast({
-        title: "Error",
-        description: `An error occurred while ${
-          purpose === "create" ? "creating" : "updating"
-        } the booking`,
-      });
+
+      if (error.message === "No session") {
+        toast({
+          title: "Error",
+          variant: "destructive",
+          description: "Please Login before.",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: `An error occurred while ${
+            purpose === "create" ? "creating" : "updating"
+          } the booking`,
+        });
+      }
     }
 
     // Optionally reset the form after submission
