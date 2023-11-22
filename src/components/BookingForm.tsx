@@ -183,7 +183,7 @@ export function BookingForm({
         `Booking ${purpose === "create" ? "created" : "updated"}:`,
         data,
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         `Error ${purpose === "create" ? "creating" : "updating"} booking:`,
         error,
@@ -212,7 +212,9 @@ export function BookingForm({
     if (setOpen) {
       setOpen(false);
     }
-
+    setTimeout(() => {
+      window.location.reload();
+    }, 1200);
     // console.log(JSON.stringify(combinedDateTime, null, 2));
   }
 
