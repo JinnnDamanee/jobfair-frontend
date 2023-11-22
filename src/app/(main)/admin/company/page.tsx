@@ -4,6 +4,7 @@ import AdminCompanyTable from "@/components/AdminCompanyTable";
 import BackButton from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import Route from "@/lib/route";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const AdminCompanyPage = async () => {
@@ -14,16 +15,20 @@ const AdminCompanyPage = async () => {
   if (!resp.success) return null;
 
   return (
-    <div className="container mt-[40px] space-y-10">
-      <div className="space-y-4">
-        <BackButton />
-        <div className="flex justify-between">
-          <h1 className="text-3xl font-bold">Manage Companies</h1>
-          <Button className="bg-muted-foreground">Add New Company</Button>
+    <>
+      <div className="container mt-[40px] space-y-10">
+        <div className="space-y-4">
+          <BackButton />
+          <div className="flex justify-between">
+            <h1 className="text-3xl font-bold">Manage Companies</h1>
+            <Button asChild>
+              <Link href={Route.ADMIN_CREATE_COMPANY}>Create Company</Link>
+            </Button>
+          </div>
         </div>
+        <AdminCompanyTable companies={resp.data} />
       </div>
-      <AdminCompanyTable companies={resp.data} />
-    </div>
+    </>
   );
 };
 

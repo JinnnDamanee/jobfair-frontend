@@ -27,6 +27,18 @@ import {
 } from "./ui/table";
 import { type Booking } from "@/types/booking";
 import { formatCellDate } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { DeleteCompanyDialog } from "./AdminCompanyTable";
 
 export const columns: ColumnDef<Booking>[] = [
   {
@@ -56,7 +68,7 @@ export const columns: ColumnDef<Booking>[] = [
   {
     accessorKey: "createdAt",
     header: () => <div className="">Booking at</div>,
-    cell: ({ row }) => <div>{row.getValue("createdAt")}</div>,
+    cell: ({ row }) => <div>{<p>{formatCellDate(row)}</p>}</div>,
   },
   {
     id: "actions",
@@ -64,7 +76,6 @@ export const columns: ColumnDef<Booking>[] = [
     header: () => <div className="">Action</div>,
     cell: ({ row }) => {
       const booking = row.original;
-      console.log(booking);
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -76,19 +87,7 @@ export const columns: ColumnDef<Booking>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              //TODO: Edit booking
-              onClick={() => {}}
-            >
-              Edit booking
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-primary"
-              // TODO: Delete booking
-              onClick={() => {}}
-            >
-              Delete booking
-            </DropdownMenuItem>
+            <DeleteCompanyDialog />
           </DropdownMenuContent>
         </DropdownMenu>
       );

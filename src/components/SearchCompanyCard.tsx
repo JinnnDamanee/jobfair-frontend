@@ -1,4 +1,4 @@
-import { MapPin, Phone } from "lucide-react";
+import { Building2, MapPin, Phone } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -25,7 +25,11 @@ export default function SearchCompanyCard({
     <Link href={`/company/${id}`}>
       <Card className="flex border-2 p-2 hover:border-primary hover:shadow-md">
         <div className="relative m-4 aspect-square w-[150px]">
-          <Image src={image} alt={name} fill className="object-contain p-4" />
+          {image.startsWith("https://") ? (
+            <Image src={image} alt={name} fill className="object-contain" />
+          ) : (
+            <Building2 className="h-full w-full p-8 text-muted-foreground" />
+          )}
         </div>
         <div>
           <CardHeader>

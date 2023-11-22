@@ -59,7 +59,7 @@ export default NavBar;
 const LinkLogo = () => {
   return (
     <Link
-      href="/"
+      href={Route.HOME}
       className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
     >
       <Image src="/chula.svg" alt="Logo" height={0} width={80} />
@@ -96,10 +96,10 @@ const AdminPanelDropdown = () => {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={Route.ADMINBOOKING}>Manage Bookings</Link>
+          <Link href={Route.ADMIN_BOOKING}>Manage Bookings</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={Route.ADMINCOMPANY}>Company Information</Link>
+          <Link href={Route.ADMIN_COMPANY}>Company Information</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

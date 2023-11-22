@@ -4,7 +4,9 @@ enum Route {
   SIGNUP = "/signup",
 
   // ADMIN
-  ADMINBOOKING = "/admin/booking",
-  ADMINCOMPANY = "/admin/company",
+  ADMIN_BOOKING = "/admin/booking",
+  ADMIN_COMPANY = "/admin/company",
+  ADMIN_CREATE_COMPANY = "/admin/company/create",
+  ADMIN_EDIT_COMPANY = "/admin/company/edit",
 }
 export default Route;

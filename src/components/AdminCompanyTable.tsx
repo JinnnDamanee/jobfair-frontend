@@ -18,7 +18,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Company } from "@/types/company";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@radix-ui/react-dialog";
+import { Label } from "@radix-ui/react-label";
 import Image from "next/image";
+import { DialogFooter, DialogHeader } from "./ui/dialog";
+import { Input } from "./ui/input";
 import {
   Table,
   TableBody,
@@ -27,6 +37,8 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import Link from "next/link";
+import Route from "@/lib/route";
 
 export const columns: ColumnDef<Company>[] = [
   {
@@ -77,7 +89,7 @@ export const columns: ColumnDef<Company>[] = [
     enableHiding: false,
     header: () => <div className="">Action</div>,
     cell: ({ row }) => {
-      const company = row.original;
+      const { id } = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -89,32 +101,61 @@ export const columns: ColumnDef<Company>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                window.location.href = `/company/${company.id}`;
-              }}
-            >
-              View Company
+            <DropdownMenuItem asChild>
+              <Link href={Route.ADMIN_EDIT_COMPANY + `/${id}`}>Edit</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              //TODO: Edit Company
-              onClick={() => {}}
-            >
-              Edit Company
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-primary"
-              // TODO: Delete Company
-              onClick={() => {}}
-            >
-              Delete Company
-            </DropdownMenuItem>
+            <DeleteCompanyDialog />
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
   },
 ];
+
+export function DeleteCompanyDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <h1 className="text-bold m-1 rounded p-1 text-primary hover:bg-destructive-foreground">
+          Delete
+        </h1>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>
+            Make changes to your profile here. Click save when you re done.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input
+              id="name"
+              defaultValue="Pedro Duarte"
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input
+              id="username"
+              defaultValue="@peduarte"
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 type AdminCompanyTableProps = {
   companies: Company[];
@@ -130,57 +171,59 @@ export default function AdminCompanyTable({
   });
 
   return (
-    <div className="w-full">
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader className="bg-muted">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  // data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
+    <>
+      <div className="w-full">
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader className="bg-muted">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    // data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
