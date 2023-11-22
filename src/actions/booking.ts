@@ -1,10 +1,16 @@
 "use server";
 
 import { getServerSession } from "@/app/api/auth/[...nextauth]/route";
-import { GetAllBookingRespType ,GetAllMyBookingRespType} from "@/types/booking";
+import {
+  GetAllBookingRespType,
+  GetAllMyBookingRespType,
+} from "@/types/booking";
 
 export const getBookings = async (): Promise<GetAllBookingRespType> => {
   const sess = await getServerSession();
+  if (!sess) {
+    throw new Error("No session");
+  }
   const resp = await fetch(`${process.env.BASE_BACKEND_URL}/bookings`, {
     headers: {
       Authorization: `Bearer ${sess?.user.token}`,
@@ -33,18 +39,23 @@ export const getBookings = async (): Promise<GetAllBookingRespType> => {
   return myData;
 };
 
-export const getBookingByCompany = async (  companyId?: string,  ): Promise<GetAllMyBookingRespType> => {
+export const getBookingByCompany = async (
+  companyId?: string,
+): Promise<GetAllMyBookingRespType> => {
   const sess = await getServerSession();
   // console.log("dataaaaaaaaaa", sess)
-  const resp = await fetch(`${process.env.BASE_BACKEND_URL}/bookings/companies/${companyId}`, {
-    headers: {
-      Authorization: `Bearer ${sess?.user.token}`,
+  const resp = await fetch(
+    `${process.env.BASE_BACKEND_URL}/bookings/companies/${companyId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${sess?.user.token}`,
+      },
+      next: {
+        revalidate: 60,
+        tags: ["booking"],
+      },
     },
-    next: {
-      revalidate: 60,
-      tags: ["booking"],
-    },
-  });
+  );
   const data = await resp.json();
   // console.log("getBookingByCompany", data)
 
@@ -68,15 +79,18 @@ export const getBookingByCompany = async (  companyId?: string,  ): Promise<GetA
 
 export const getMyBooking = async (): Promise<GetAllMyBookingRespType> => {
   const sess = await getServerSession();
-  const resp = await fetch(`${process.env.BASE_BACKEND_URL}/bookings/users/${sess?.user.id}`, {
-    headers: {
-      Authorization: `Bearer ${sess?.user.token}`,
+  const resp = await fetch(
+    `${process.env.BASE_BACKEND_URL}/bookings/users/${sess?.user.id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${sess?.user.token}`,
+      },
+      next: {
+        revalidate: 60,
+        tags: ["booking"],
+      },
     },
-    next: {
-      revalidate: 60,
-      tags: ["booking"],
-    },
-  });
+  );
   const data = await resp.json();
   // console.log("bookingggggggggggg", data)
   const myData: GetAllMyBookingRespType = {
@@ -102,24 +116,27 @@ export const getMyBooking = async (): Promise<GetAllMyBookingRespType> => {
   return myData;
 };
 
-export const createBooking = async (companyId:string, requestData: string) => {
+export const createBooking = async (companyId: string, requestData: string) => {
   const sess = await getServerSession();
   if (!sess) {
     throw new Error("No session");
   }
-   const resp = await fetch(`${process.env.BASE_BACKEND_URL}/companies/${companyId}/bookings`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${sess?.user.token}`,
-      "Content-Type": "application/json",
-
-    },body: JSON.stringify({
-      bookingDate: requestData
-    }),
-    
-  });
+  const resp = await fetch(
+    `${process.env.BASE_BACKEND_URL}/companies/${companyId}/bookings`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${sess?.user.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        bookingDate: requestData,
+      }),
+    },
+  );
   const data = await resp.json();
-  return data;}
+  return data;
+};
 
 export const updateBooking = async () => {};
 

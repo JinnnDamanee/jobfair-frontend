@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { toast } from "./ui/use-toast";
 import { Skeleton } from "./ui/skeleton";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { useSession } from "next-auth/react";
 
 type SearchCompanyProps = {
   search?: string;
