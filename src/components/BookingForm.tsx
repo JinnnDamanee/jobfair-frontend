@@ -212,7 +212,9 @@ export function BookingForm({
     if (setOpen) {
       setOpen(false);
     }
-
+    setTimeout(() => {
+      window.location.reload();
+    }, 1200);
     // console.log(JSON.stringify(combinedDateTime, null, 2));
   }
 

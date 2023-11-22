@@ -77,7 +77,6 @@ export default function BookingCatalog({ session }: { session: Session }) {
           duration: 5000,
         });
         setDeleteDialogOpen(false);
-        router.refresh();
       } else {
         toast({
           title: "Error",
@@ -94,6 +93,9 @@ export default function BookingCatalog({ session }: { session: Session }) {
         duration: 5000,
       });
     }
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
   return (
     <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
